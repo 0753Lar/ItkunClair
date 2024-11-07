@@ -3,19 +3,40 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: theme(colors.slate.50);
+  --fontground: theme(colors.slate.800);
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+
+  background-image: linear-gradient(
+    320deg,
+    theme(colors.orange.400),
+    theme(colors.rose.600),
+    theme(colors.fuchsia.900)
+  );
+
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  @apply bg-opacity-20 bg-white 
+  rounded-xl 
+  border-[1px] border-white border-opacity-30 
+  p-2 
+  shadow-sm
+  text-rose-950;
+}
+
+.glass {
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  @apply bg-opacity-20 bg-slate-200 border-slate-50 border-opacity-20 border-2 shadow-lg rounded-2xl;
 }
