@@ -4,7 +4,7 @@
 
 :root {
   --background: theme(colors.slate.50);
-  --fontground: theme(colors.slate.800);
+  --foreground: theme(colors.slate.700);
 }
 
 body {
@@ -31,8 +31,7 @@ body {
   rounded-xl 
   border-[1px] border-white border-opacity-30 
   p-2 
-  shadow-sm
-  text-rose-950;
+  shadow-sm;
 }
 
 .glass {

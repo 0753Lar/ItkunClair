@@ -1,4 +1,4 @@
-import { useThemeContext } from "@/app/page";
+import { useThemeContext } from "../context/themeContext";
 
 export default function Toggle() {
   const { toggleTheme, theme } = useThemeContext();

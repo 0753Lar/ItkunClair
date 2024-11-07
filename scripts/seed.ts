@@ -41,13 +41,11 @@ async function seedDB() {
     await CET4Phrase.deleteMany({});
     await CET6Phrase.deleteMany({});
 
-    const CET4: WordJson[] = (await import("@/assets/vocabulary/CET-4.json"))
-      .default;
-    await insertNewVocabulary(CET4, CET4Word, CET4Phrase);
+    const CET4 = (await import("@/assets/vocabulary/CET-4.json")).default;
+    await insertNewVocabulary(CET4 as WordJson[], CET4Word, CET4Phrase);
 
-    const CET6: WordJson[] = (await import("@/assets/vocabulary/CET-6.json"))
-      .default;
-    await insertNewVocabulary(CET6, CET6Word, CET6Phrase);
+    const CET6 = (await import("@/assets/vocabulary/CET-6.json")).default;
+    await insertNewVocabulary(CET6 as WordJson[], CET6Word, CET6Phrase);
     exit(0);
   } catch (err) {
     console.log(err);

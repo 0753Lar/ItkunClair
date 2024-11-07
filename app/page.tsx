@@ -1,24 +1,11 @@
 "use client";
 
 import Background from "@/components/Backgound";
+import { ThemeMode, ThemeProvider } from "@/components/context/themeContext";
 import Github from "@/components/Github";
 import Toggle from "@/components/Toggle";
 import localFont from "next/font/local";
-import { createContext, useContext, useState } from "react";
-
-export type ThemeMode = "light" | "dark";
-
-const systemMode: ThemeMode = window.matchMedia("(prefers-color-scheme: dark)")
-  .matches
-  ? "dark"
-  : "light";
-
-interface ThemeContextInterface {
-  theme: ThemeMode;
-  toggleTheme: () => void;
-}
-
-const themeContext = createContext<ThemeContextInterface | null>(null);
+import { useState } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,8 +18,13 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+// const systemMode: ThemeMode = window.matchMedia("(prefers-color-scheme: dark)")
+//   .matches
+//   ? "dark"
+//   : "light";
+
 export default function Home() {
-  const [theme, setTheme] = useState<ThemeMode>(systemMode);
+  const [theme, setTheme] = useState<ThemeMode>("light");
 
   const contextValue = {
     theme,
@@ -40,7 +32,7 @@ export default function Home() {
   };
 
   return (
-    <themeContext.Provider value={contextValue}>
+    <ThemeProvider value={contextValue}>
       <html lang="en" className={theme}>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased relative h-[100vh]`}
@@ -57,9 +49,6 @@ export default function Home() {
           </main>
         </body>
       </html>
-    </themeContext.Provider>
+    </ThemeProvider>
   );
 }
-
-export const useThemeContext = () =>
-  useContext(themeContext) as unknown as ThemeContextInterface;
