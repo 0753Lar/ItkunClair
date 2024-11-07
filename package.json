@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "preinstall": "npm only-allow pnpm",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "npx tsx ./scripts/seed.ts"
+    "seed": "npx tsx ./scripts/seed.ts",
+    "dominant": "npx tsx ./scripts/dominant.ts"
   },
   "dependencies": {
     "mongoose": "^8.8.0",
@@ -21,11 +21,18 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "canvas": "^2.11.2",
     "eslint": "^8",
     "eslint-config-next": "15.0.2",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tailwindcss-variable-colors": "^0.1.0",
     "tsx": "^4.19.2",
     "typescript": "^5"
+  },
+  "author": {
+    "name": "ikunable",
+    "email": "limequery@163.com",
+    "url": "https://github.com/0753Ljuc/ikunable"
   }
 }
