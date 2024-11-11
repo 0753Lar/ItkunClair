@@ -1,6 +1,6 @@
 export default function Background() {
   return (
-    <div className="absolute h-full w-full top-0 left-0 overflow-hidden z-10">
+    <div className="absolute h-full w-full top-0 left-0 overflow-hidden -z-10">
       <div
         className="glass-bg absolute w-20 h-14 top-12 left-[24%]"
         style={{
