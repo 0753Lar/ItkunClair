@@ -1,10 +1,24 @@
-import dbConnect from "@/lib/dbConnect";
 import mongoose from "mongoose";
-import { IPhrase, phraseSchema } from "@/models/Phrase";
-import { IWord, wordSchema } from "@/models/Word";
+import {
+  CET4PhraseModel,
+  CET6PhraseModel,
+  IPhrase,
+} from "@/lib/mongoose/models/Phrase";
+import {
+  CET4WordModel,
+  CET6WordModel,
+  IWord,
+} from "@/lib/mongoose/models/Word";
 import { exit } from "process";
+import { clientConnect } from "@/lib/mongoose/db";
+import dotenv from "dotenv";
 
 const override = process.argv.includes("--override");
+dotenv.config({ path: ".env.local" });
+
+if (!process.env.MONGODB_URI) {
+  throw new Error("Please add your MongoDB URI to the environment variables");
+}
 
 interface WordJson {
   word: string;
@@ -14,15 +28,15 @@ interface WordJson {
 
 async function seedDB() {
   try {
-    await dbConnect();
-
-    const CET4Word = mongoose.model("cet4_word", wordSchema);
-    const CET6Word = mongoose.model("cet6_word", wordSchema);
-    const CET4Phrase = mongoose.model("cet4_phrase", phraseSchema);
-    const CET6Phrase = mongoose.model("cet6_phrase", phraseSchema);
+    await clientConnect(process.env.MONGODB_URI);
 
     if (!override) {
-      const models = [CET4Word, CET4Phrase, CET6Word, CET6Phrase];
+      const models = [
+        CET4WordModel,
+        CET4PhraseModel,
+        CET6WordModel,
+        CET6PhraseModel,
+      ];
 
       for (const model of models) {
         const count = await model.countDocuments();
@@ -36,20 +50,29 @@ async function seedDB() {
       }
     }
 
-    await CET4Word.deleteMany({});
-    await CET6Word.deleteMany({});
-    await CET4Phrase.deleteMany({});
-    await CET6Phrase.deleteMany({});
+    await CET4WordModel.deleteMany({});
+    await CET6WordModel.deleteMany({});
+    await CET4PhraseModel.deleteMany({});
+    await CET6PhraseModel.deleteMany({});
 
     const CET4 = (await import("@/assets/vocabulary/CET-4.json")).default;
-    await insertNewVocabulary(CET4 as WordJson[], CET4Word, CET4Phrase);
+    await insertNewVocabulary(
+      CET4 as WordJson[],
+      CET4WordModel,
+      CET4PhraseModel
+    );
 
     const CET6 = (await import("@/assets/vocabulary/CET-6.json")).default;
-    await insertNewVocabulary(CET6 as WordJson[], CET6Word, CET6Phrase);
-    exit(0);
+    await insertNewVocabulary(
+      CET6 as WordJson[],
+      CET6WordModel,
+      CET6PhraseModel
+    );
   } catch (err) {
     console.log(err);
   }
+  await mongoose.connection.close();
+  exit(0);
 }
 
 async function insertNewVocabulary(
@@ -75,7 +98,7 @@ async function insertNewVocabulary(
     }
   }
   console.info(
-    `🚀🚀🚀 [insertNewVocabulary] done with collection [${WordModel.modelName}] and [${PhraseModel.modelName}]!!`
+    `\n🚀🚀🚀 [insertNewVocabulary] done with collection [${WordModel.modelName}] and [${PhraseModel.modelName}]!!\n`
   );
 }
 

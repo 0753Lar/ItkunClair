@@ -46,7 +46,3 @@ body {
   -webkit-backdrop-filter: blur(5px);
   @apply bg-opacity-20 bg-slate-200 border-slate-50 border-opacity-20 border-2 shadow-lg rounded-2xl;
 }
-
-.badge-bar {
-  @apply py-1 px-2 rounded-md bg-slate-100 bg-no-repeat  border-slate-100 flex gap-2 justify-center items-center;
-}

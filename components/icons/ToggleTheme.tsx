@@ -1,7 +1,10 @@
-import { useThemeContext } from "../../app/context/themeContext";
+"use client";
 
-export default function Toggle() {
-  const { toggleTheme, theme } = useThemeContext();
+import { useRootContext } from "@/app/context/rootContext";
+
+export default function ToggleTheme() {
+  const { theme, toggleTheme } = useRootContext();
+
   return (
     <button
       onClick={toggleTheme}
