@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: theme(colors.slate.50);
-  --foreground: theme(colors.slate.700);
+  --background: theme(colors.slate.700);
+  --foreground: theme(colors.slate.50);
 }
 
 body {
@@ -34,8 +34,19 @@ body {
   shadow-sm;
 }
 
-.glass {
+.glass-header {
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  @apply bg-opacity-10 bg-slate-50  shadow-lg
+  w-24 h-14 rotate-6 rounded-lg;
+}
+
+.glass-bg {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   @apply bg-opacity-20 bg-slate-200 border-slate-50 border-opacity-20 border-2 shadow-lg rounded-2xl;
+}
+
+.badge-bar {
+  @apply py-1 px-2 rounded-md bg-slate-100 bg-no-repeat  border-slate-100 flex gap-2 justify-center items-center;
 }

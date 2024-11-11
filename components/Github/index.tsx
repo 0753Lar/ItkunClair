@@ -2,12 +2,17 @@ import pkg from "@/package.json";
 
 export default function Github() {
   return (
-    <a href={pkg.author.url} target="_blank" rel="noopener noreferrer">
+    <a
+      href={pkg.author.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="overflow-hidden"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-6 h-6 text-gray-800 hover:text-slate-200 transition-colors"
+        className="w-8 h-8 md:w-6 md:h-6 text-gray-800 md:hover:text-slate-500 transition-colors"
       >
         <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.07-.607.07-.607 1.003.07 1.531 1.03 1.531 1.03.892 1.528 2.341 1.087 2.91.831.092-.647.35-1.087.635-1.338-2.22-.253-4.555-1.11-4.555-4.944 0-1.091.39-1.984 1.03-2.683-.103-.253-.446-1.27.097-2.648 0 0 .84-.269 2.75 1.026A9.563 9.563 0 0 1 12 6.844a9.55 9.55 0 0 1 2.502.338c1.91-1.295 2.75-1.026 2.75-1.026.543 1.378.2 2.395.098 2.648.64.7 1.03 1.592 1.03 2.683 0 3.842-2.338 4.687-4.566 4.935.36.31.679.923.679 1.861 0 1.344-.012 2.426-.012 2.756 0 .268.18.579.688.481C19.135 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
       </svg>

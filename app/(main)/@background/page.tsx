@@ -1,162 +1,130 @@
 export default function Background() {
   return (
-    <div className="absolute h-full w-full top-0 left-0 overflow-hidden -z-10">
+    <div className="absolute h-full w-full top-0 left-0 overflow-hidden z-10">
       <div
-        className="glass absolute"
+        className="glass-bg absolute w-20 h-14 top-12 left-[24%]"
         style={{
-          width: "83px",
-          height: "56px",
-          top: "48px",
-          left: "153px",
           opacity: 0.0581,
           transform: "rotate(0.170709turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute w-16 h-44 top-3/4 left-3/4"
         style={{
-          width: "64px",
-          height: "179px",
-          top: "444px",
-          left: "561px",
           opacity: 0.1432,
           transform: "rotate(0.0842183turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-[52%] left-[33%]"
         style={{
           width: "63px",
           height: "61px",
-          top: "469px",
-          left: "178px",
           opacity: 0.0480375,
           transform: "rotate(0.237894turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute -right-[1%] top-[312px]"
         style={{
           width: "80px",
           height: "60px",
-          top: "312px",
-          left: "757px",
           opacity: 0.06,
           transform: "rotate(0.780458turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-[45%] right-[30%]"
         style={{
           width: "68px",
           height: "193px",
-          top: "467px",
-          left: "341px",
           opacity: 0.16405,
-          transform: "rotate(0.815834turn)",
+          transform: "rotate(0.785834turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-48 right-1/4"
         style={{
           width: "111px",
           height: "85px",
-          top: "179px",
-          left: "653px",
           opacity: 0.117938,
           transform: "rotate(0.856967turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-14 left-[30%]"
         style={{
           width: "136px",
           height: "130px",
-          top: "54px",
-          left: "275px",
           opacity: 0.221,
           transform: "rotate(0.172273turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-[48%] left-[22%]"
         style={{
           width: "81px",
           height: "95px",
-          top: "455px",
-          left: "541px",
           opacity: 0.0961875,
           transform: "rotate(0.496695turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-10 left-32 hidden md:block"
         style={{
           width: "193px",
           height: "172px",
-          top: "40px",
-          left: "150px",
           opacity: 0.41495,
           transform: "rotate(0.222699turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-[88%] left-[52%]"
         style={{
           width: "152px",
           height: "120px",
-          top: "412px",
-          left: "337px",
           opacity: 0.228,
-          transform: "rotate(0.799859turn)",
+          transform: "rotate(0.869859turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute left-2/3 top-1/3"
         style={{
-          width: "180px",
-          height: "172px",
-          top: "147px",
-          left: "302px",
+          width: "130px",
+          height: "282px",
           opacity: 0.387,
-          transform: "rotate(0.955275turn)",
+          transform: "rotate(0.895275turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute -right-[14%] -bottom-[4%]"
         style={{
           width: "168px",
           height: "102px",
-          top: "713px",
-          left: "684px",
           opacity: 0.2142,
           transform: "rotate(0.429293turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-3/4 left-1/4"
         style={{
           width: "54px",
           height: "80px",
-          top: "614px",
-          left: "281px",
           opacity: 0.054,
           transform: "rotate(0.595487turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-3/4 left-[38%]"
         style={{
           width: "97px",
           height: "105px",
-          top: "644px",
-          left: "384px",
           opacity: 0.127312,
           transform: "rotate(0.813351turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute top-[9%] left-[5%]"
         style={{
           width: "77px",
           height: "191px",
@@ -167,18 +135,16 @@ export default function Background() {
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute left-[16%] top-[78%]"
         style={{
           width: "112px",
           height: "130px",
-          top: "707px",
-          left: "656px",
           opacity: 0.182,
           transform: "rotate(0.437133turn)",
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute"
         style={{
           width: "95px",
           height: "131px",
@@ -189,7 +155,7 @@ export default function Background() {
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute"
         style={{
           width: "77px",
           height: "77px",
@@ -200,7 +166,7 @@ export default function Background() {
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute"
         style={{
           width: "152px",
           height: "128px",
@@ -211,7 +177,7 @@ export default function Background() {
         }}
       ></div>
       <div
-        className="glass absolute"
+        className="glass-bg absolute"
         style={{
           width: "146px",
           height: "101px",

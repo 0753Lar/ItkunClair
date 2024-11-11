@@ -1,4 +1,4 @@
-import { useThemeContext } from "../context/themeContext";
+import { useThemeContext } from "../../app/context/themeContext";
 
 export default function Toggle() {
   const { toggleTheme, theme } = useThemeContext();
@@ -6,7 +6,7 @@ export default function Toggle() {
     <button
       onClick={toggleTheme}
       type="button"
-      className="flex items-center w-5 h-5 text-gray-800 hover:text-slate-200 transition-colors"
+      className="flex items-center w-6 h-6 md:w-5 md:h-5 text-gray-800 md:hover:text-slate-500 transition-colors overflow-hidden"
     >
       {theme === "light" ? (
         <svg
