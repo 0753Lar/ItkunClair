@@ -1,3 +1,4 @@
+import { useLocale } from "@/hooks/useLocale";
 import { PropsWithChildren, useContext } from "react";
 import { createContext } from "react";
 
@@ -13,9 +14,10 @@ export const useQuizContext = () =>
   useContext(quizContext) as unknown as QuizContextInterface;
 
 export const QuizProvider = ({ children }: PropsWithChildren) => {
+  const t = useLocale();
   const quizValue: QuizContextInterface = {
     quiz: "CET4",
-    quizType: "transition",
+    quizType: t("home_quiz_type_translation"),
     quizcount: 50,
   };
 
