@@ -1,4 +1,4 @@
-import { Language, useRootContext } from "../context/rootContext";
+import { Language } from "../context/rootContext";
 import EN from "./en.json";
 import ZH from "./zh.json";
 

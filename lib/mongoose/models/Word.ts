@@ -37,12 +37,8 @@ export const wordSchema = new mongoose.Schema<IWord>({
 export const CET4_WORD = "cet4_word";
 export const CET6_WORD = "cet6_word";
 
-const CET4WordModel = mongoose.modelNames().includes(CET4_WORD)
-  ? mongoose.model(CET4_WORD)
-  : mongoose.model(CET4_WORD, wordSchema);
+const CET4WordModel = mongoose.model(CET4_WORD, wordSchema);
 
-const CET6WordModel = mongoose.modelNames().includes(CET6_WORD)
-  ? mongoose.model(CET6_WORD)
-  : mongoose.model(CET6_WORD, wordSchema);
+const CET6WordModel = mongoose.model(CET6_WORD, wordSchema);
 
 export { CET4WordModel, CET6WordModel };
