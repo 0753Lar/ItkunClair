@@ -32,10 +32,10 @@ export default function Page() {
   const isTranslationFinished = current + 1 === quizcount;
 
   return (
-    <section className="py-2 px-4 ">
-      <div>
+    <section className="py-2 px-4">
+      <div className="md:flex md:justify-center">
         {quizType === "translation" && quizList.length !== 0 && (
-          <div>
+          <div className="md:max-w-2xl md:w-3/5">
             <div className="mb-2 flex justify-between">
               <span>{t("home_quiz_type_translation")}</span>
               {!isTranslationFinished && (

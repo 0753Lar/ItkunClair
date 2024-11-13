@@ -58,7 +58,7 @@ export default function Translation({ item, onDone }: TranslationProps) {
           : "animate__fadeInDownBig animate__faster"
       }`}
     >
-      <div className="card flex flex-col gap-4">
+      <div className="card flex flex-col md:w-full gap-4">
         <div>
           <div className="text-sm text-slate-200">中文释义: </div>
           {item.translations.map((t, i) => (
