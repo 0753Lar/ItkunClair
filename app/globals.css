@@ -38,7 +38,7 @@ body {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   @apply bg-opacity-10 bg-slate-50  shadow-lg
-  w-24 h-14 rotate-6 rounded-lg;
+  w-28 h-14 rotate-6 rounded-lg;
 }
 
 .glass-bg {

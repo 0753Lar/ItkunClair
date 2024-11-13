@@ -15,6 +15,7 @@ type InputStatus = "success" | "error" | "normal";
 export default function Translation() {
   const { quiz, quizcount } = useQuizContext();
   const t = useLocale();
+  const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [quizList, setQuizList] = useState<IWord[]>([]);
   const [status, setStatus] = useState<InputStatus>("normal");
@@ -23,8 +24,10 @@ export default function Translation() {
   const inputRef = createRef<HTMLInputElement>();
 
   const requestList = () => {
+    setLoading(true);
     fetchWords(quiz === "CET6" ? "cet6_word" : "cet4_word", quizcount).then(
       (res) => {
+        setLoading(false);
         setQuizList(res);
         setCurrent(0);
       }
@@ -58,6 +61,7 @@ export default function Translation() {
   const isTranslationFinished = current + 1 === quizcount;
   const item = quizList[current];
 
+
   useEffect(() => {
     inputRef.current?.focus();
     requestList();
@@ -88,7 +92,7 @@ export default function Translation() {
           </span>
         )}
       </div>
-      {quizList.length === 0 ? (
+      {loading ? (
         <div>loading...</div>
       ) : isTranslationFinished ? (
         <div className="card text-center">
