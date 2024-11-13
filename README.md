@@ -23,9 +23,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Todo List
 
-⃣ &nbsp;Integrate local mongodb to docker. </br>
-⃣ &nbsp;Replace loading component with pretty loader </br>
-⃣ &nbsp;Add 'skip' button for skipping current word </br>
-⃣ &nbsp;Beautify 'Show Answer' part </br>
-⃣ &nbsp;Integrate AI to come up with the training suggestion</br>
-⃣ &nbsp;Add more word books, current CET4 and CET6 are no clear.</br>
+- [x] &nbsp;Integrate local mongodb to docker. </br>
+- [x] &nbsp;Replace loading component with pretty loader </br>
+- [ ] &nbsp;Add 'skip' button for skipping current word </br>
+- [ ] &nbsp;Beautify 'Show Answer' part </br>
+- [ ] &nbsp;Integrate AI to come up with the training suggestion</br>
+- [ ] &nbsp;Add more word books, current CET4 and CET6 are no clear.</br>

@@ -1,5 +1,5 @@
 {
-  "name": "ItkunClair",
+  "name": "itkunclair",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "npx tsx ./scripts/seed.ts",
-    "dominant": "npx tsx ./scripts/dominant.ts"
+    "docker-compose": "docker-compose --env-file .env.docker up --build"
   },
   "dependencies": {
     "mongoose": "^8.8.0",
@@ -22,7 +22,6 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "animate.css": "^4.1.1",
-    "canvas": "^2.11.2",
     "dotenv": "^16.4.5",
     "eslint": "^8",
     "eslint-config-next": "15.0.2",

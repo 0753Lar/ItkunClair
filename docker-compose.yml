@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: . # Use the Dockerfile in the current directory
+    ports:
+      - "3000:3000" # Expose the app on port 3000
+    environment:
+      - MONGO_URI=${MONGODB_URI} # MongoDB URI for your app
+    depends_on:
+      - mongo # Ensure MongoDB starts before your app
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017" # Expose MongoDB on the default port
+    volumes:
+      - mongo_data:/data/db # Persist MongoDB data
+
+volumes:
+  mongo_data:

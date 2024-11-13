@@ -76,7 +76,7 @@ async function insertNewVocabulary(
   PhraseModel: mongoose.Model<IPhrase>
 ) {
   console.info(
-    `Inserting vocabulary: [${WordModel.modelName}] and [${PhraseModel.modelName}]`
+    `Inserting vocabulary: [${WordModel.modelName}] and [${PhraseModel.modelName}]\n`
   );
   for (let i = 0; i < wordList.length; i++) {
     const item = wordList[i];
@@ -98,7 +98,7 @@ async function insertNewVocabulary(
       readline.cursorTo(process.stdout, 0);
       process.stdout.write(`Progress: ${i + 1}/${wordList.length}`);
     } catch (error) {
-      console.log(`❌❌❌ ${JSON.stringify(item, null, 2)}\n ${error}`);
+      console.log(`\n❌❌❌ ${JSON.stringify(item, null, 2)}\n ${error}`);
     }
   }
   console.info(
