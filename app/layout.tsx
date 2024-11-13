@@ -12,6 +12,6 @@ if (!process.env.MONGODB_URI) {
   throw new Error("Please add your MongoDB URI to the environment variables");
 }
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
   return <RootProvider>{children}</RootProvider>;
 }

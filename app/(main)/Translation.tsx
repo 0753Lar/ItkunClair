@@ -7,6 +7,7 @@ import { fetchWords } from "@/lib/mongoose/actions/fetchWords";
 import { useQuizContext } from "../context/quizContext";
 import Empty from "@/components/icons/Empty";
 import { montserrat } from "../fonts";
+import Loading from "@/components/icons/Loading";
 
 const animateDuration = 500;
 
@@ -61,7 +62,6 @@ export default function Translation() {
   const isTranslationFinished = current + 1 === quizcount;
   const item = quizList[current];
 
-
   useEffect(() => {
     inputRef.current?.focus();
     requestList();
@@ -93,7 +93,9 @@ export default function Translation() {
         )}
       </div>
       {loading ? (
-        <div>loading...</div>
+        <div className=" w-full h-32 flex justify-center items-center">
+          <Loading className="fill-slate-200 text-transparent" />
+        </div>
       ) : isTranslationFinished ? (
         <div className="card text-center">
           <div className="flex flex-col items-center mb-2">

@@ -46,3 +46,20 @@ body {
   -webkit-backdrop-filter: blur(5px);
   @apply bg-opacity-20 bg-slate-200 border-slate-50 border-opacity-20 border-2 shadow-lg rounded-2xl;
 }
+
+@keyframes bgWiggle {
+  0% {
+    background-position: 200% 200%;
+  }
+  50% {
+    background-position: 200% 200%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.bg-wiggle {
+  background-size: 200% 200%;
+  animation: bgWiggle 2s ease-in-out 0s infinite;
+}
