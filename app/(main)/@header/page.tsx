@@ -34,8 +34,8 @@ export default function Header() {
       </div>
 
       <div className="relative text-center">
-        <div className="text-6xl text-white">{pkg.name}</div>
-        <div className="glass-header absolute  left-1/2 top-0"></div>
+        <div className="text-6xl text-white animate__animated animate__zoomIn">{pkg.name}</div>
+        <div className="glass-header absolute  left-1/2 top-0 animate__animated animate__zoomInDown"></div>
       </div>
     </header>
   );
