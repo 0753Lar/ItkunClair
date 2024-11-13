@@ -14,7 +14,7 @@ export default function Header() {
 
   return (
     <header>
-      <div className="flex flex-row justify-between items-start py-4 ml-4 md:ml-2 mr-8 md:mr-4">
+      <div className="flex flex-row justify-between items-start py-4 ml-4 md:ml-2 mr-4">
         <div className="text-sm flex flex-col md:flex-row md:gap-2">
           <div>
             {t("home_quiz_vocabulary_title")}: {quiz}

@@ -7,7 +7,7 @@ export default function ToggleLanguage() {
     <button
       onClick={toggleLanguage}
       type="button"
-      className="flex items-center w-6 h-6 md:w-5 md:h-5 text-gray-800 md:hover:text-slate-500 transition-colors overflow-hidden"
+      className="flex items-center w-5 h-5 md:w-6 md:h-6 text-gray-800 md:hover:text-slate-500 transition-colors overflow-hidden"
     >
       {language === "zh" ? (
         <svg
