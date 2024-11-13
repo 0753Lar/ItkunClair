@@ -1,14 +1,10 @@
 import mongoose from "mongoose";
 import {
-  CET4PhraseModel,
-  CET6PhraseModel,
+  CET4_PHRASE,
+  CET6_PHRASE,
   IPhrase,
 } from "@/lib/mongoose/models/Phrase";
-import {
-  CET4WordModel,
-  CET6WordModel,
-  IWord,
-} from "@/lib/mongoose/models/Word";
+import { CET4_WORD, CET6_WORD, IWord } from "@/lib/mongoose/models/Word";
 import { exit } from "process";
 import { clientConnect } from "@/lib/mongoose/db";
 import dotenv from "dotenv";
@@ -30,14 +26,14 @@ async function seedDB() {
   try {
     await clientConnect(process.env.MONGODB_URI);
 
-    if (!override) {
-      const models = [
-        CET4WordModel,
-        CET4PhraseModel,
-        CET6WordModel,
-        CET6PhraseModel,
-      ];
+    const models = [
+      mongoose.model(CET4_WORD),
+      mongoose.model(CET6_WORD),
+      mongoose.model(CET4_PHRASE),
+      mongoose.model(CET6_PHRASE),
+    ];
 
+    if (!override) {
       for (const model of models) {
         const count = await model.countDocuments();
 
@@ -50,23 +46,20 @@ async function seedDB() {
       }
     }
 
-    await CET4WordModel.deleteMany({});
-    await CET6WordModel.deleteMany({});
-    await CET4PhraseModel.deleteMany({});
-    await CET6PhraseModel.deleteMany({});
+    models.forEach((m) => m.deleteMany({}));
 
     const CET4 = (await import("@/assets/vocabulary/CET-4.json")).default;
     await insertNewVocabulary(
       CET4 as WordJson[],
-      CET4WordModel,
-      CET4PhraseModel
+      mongoose.model<IWord>(CET4_WORD),
+      mongoose.model<IPhrase>(CET4_PHRASE)
     );
 
     const CET6 = (await import("@/assets/vocabulary/CET-6.json")).default;
     await insertNewVocabulary(
       CET6 as WordJson[],
-      CET6WordModel,
-      CET6PhraseModel
+      mongoose.model<IWord>(CET6_WORD),
+      mongoose.model<IPhrase>(CET6_PHRASE)
     );
   } catch (err) {
     console.log(err);
@@ -83,16 +76,16 @@ async function insertNewVocabulary(
   for (let i = 0; i < wordList.length; i++) {
     const item = wordList[i];
     try {
-      const doc = await PhraseModel.insertMany(item.phrases ?? [], {
-        ordered: false,
-      });
       const word = new WordModel({
         word: item.word,
         translations: item.translations,
-        phraseIds: doc.map((field) => field._id),
       });
-
       await word.save();
+
+      const arr = item.phrases?.map((v) => ({ ...v, wordId: word._id })) || [];
+      await PhraseModel.insertMany(arr, {
+        ordered: false,
+      });
     } catch (error) {
       console.log(`❌❌❌ ${JSON.stringify(item, null, 2)}\n ${error}`);
     }

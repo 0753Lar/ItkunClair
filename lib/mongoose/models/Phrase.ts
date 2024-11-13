@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export interface IPhrase {
   phrase: string;
   translation: string;
+  wordId: mongoose.Schema.Types.ObjectId;
 }
 
 export const phraseSchema = new mongoose.Schema<IPhrase>({
@@ -14,12 +15,8 @@ export const phraseSchema = new mongoose.Schema<IPhrase>({
     type: String,
     required: true,
   },
+  wordId: { type: mongoose.Schema.Types.ObjectId, required: true },
 });
 
 export const CET4_PHRASE = "cet4_phrase";
 export const CET6_PHRASE = "cet6_phrase";
-
-const CET4PhraseModel = mongoose.model(CET4_PHRASE, phraseSchema);
-const CET6PhraseModel = mongoose.model(CET6_PHRASE, phraseSchema);
-
-export { CET4PhraseModel, CET6PhraseModel };
