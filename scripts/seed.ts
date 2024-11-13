@@ -8,6 +8,7 @@ import { CET4_WORD, CET6_WORD, IWord } from "@/lib/mongoose/models/Word";
 import { exit } from "process";
 import { clientConnect } from "@/lib/mongoose/db";
 import dotenv from "dotenv";
+import * as readline from "readline";
 
 const override = process.argv.includes("--override");
 dotenv.config({ path: ".env.local" });
@@ -46,6 +47,7 @@ async function seedDB() {
       }
     }
 
+    console.info("emptying collections...");
     models.forEach((m) => m.deleteMany({}));
 
     const CET4 = (await import("@/assets/vocabulary/CET-4.json")).default;
@@ -73,6 +75,9 @@ async function insertNewVocabulary(
   WordModel: mongoose.Model<IWord>,
   PhraseModel: mongoose.Model<IPhrase>
 ) {
+  console.info(
+    `Inserting vocabulary: [${WordModel.modelName}] and [${PhraseModel.modelName}]`
+  );
   for (let i = 0; i < wordList.length; i++) {
     const item = wordList[i];
     try {
@@ -86,6 +91,12 @@ async function insertNewVocabulary(
       await PhraseModel.insertMany(arr, {
         ordered: false,
       });
+
+      if (i !== 0) {
+        readline.clearLine(process.stdout, 0);
+      }
+      readline.cursorTo(process.stdout, 0);
+      process.stdout.write(`Progress: ${i + 1}/${wordList.length}`);
     } catch (error) {
       console.log(`❌❌❌ ${JSON.stringify(item, null, 2)}\n ${error}`);
     }
