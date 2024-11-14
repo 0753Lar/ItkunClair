@@ -1,24 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## itkunclair
+Welcome to **itkunClair** ! 
 
-## Getting Started
+This project provides an efficient setup to get your application up and running with two different approaches:
 
-First, copy the `.env.local.template` as name with `.env.local`, and change MONGODB_URI to your personal mongodb url.
+1. **Using Docker**: The simplest way to get started with just a single command.
+2. **Without Docker**: A manual setup in three steps, for those who prefer not to use Docker.
 
-Second, seed the data into your mongodb by running below command:
+<hr />
 
+### Getting Started
+#### Prerequisites
+* Ensure you have [Node.js](https://nodejs.org/en) installed.
+* If using Docker, ensure [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) are installed.
+
+
+### Quick Start with Docker 🐳
+Docker will automatically pull the necessary images, set up the MongoDB instance, seed data, and start the application.
+
+Run the command: 
+```bash 
+npm run docker-compose
+```
+
+
+### Manual Setup (Without Docker) ⚙️
+
+1. Copy the `.env.local.template` and change name as `.env.local`, then replace the MONGODB_URI with your personal mongodb url.
+
+```dotenv
+MONGODB_URI="mongodb://127.0.0.1:27017/itkunclair"
+```
+
+2. Seed the database:
 ```bash
     npm run seed
-    # or you can override the same table
+    # or you can override the existing table in same database
     npm run seed -- --override
 ```
 
-Finally, you are abled to run the development server:
-
+3. start the application, then 
 ```bash
-npm run dev
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application should now be running at [http://localhost:3000](http://localhost:3000).
 
 
 ## Todo List
@@ -26,6 +51,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [x] &nbsp;Integrate local mongodb to docker. </br>
 - [x] &nbsp;Replace loading component with pretty loader </br>
 - [ ] &nbsp;Add 'skip' button for skipping current word </br>
+- [ ] &nbsp;Add husky for linting before commit change. </br>
 - [ ] &nbsp;Beautify 'Show Answer' part </br>
 - [ ] &nbsp;Integrate AI to come up with the training suggestion</br>
 - [ ] &nbsp;Add more word books, current CET4 and CET6 are no clear.</br>
