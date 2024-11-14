@@ -39,6 +39,7 @@ export const RootProvider = ({ children }: PropsWithChildren) => {
           className={`antialiased relative h-[100vh] ${montserrat.className}`}
         >
           {children}
+          <div id="portal" />
         </body>
       </html>
     </rootContext.Provider>

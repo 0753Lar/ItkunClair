@@ -8,6 +8,7 @@ import { useQuizContext } from "../context/quizContext";
 import Empty from "@/components/icons/Empty";
 import { montserrat } from "../fonts";
 import Loading from "@/components/icons/Loading";
+import { translationdefaultMaxCount } from "@/utils/config";
 
 const animateDuration = 500;
 
@@ -26,13 +27,14 @@ export default function Translation() {
 
   const requestList = () => {
     setLoading(true);
-    fetchWords(quiz === "CET6" ? "cet6_word" : "cet4_word", quizcount).then(
-      (res) => {
-        setLoading(false);
-        setQuizList(res);
-        setCurrent(0);
-      }
-    );
+    fetchWords(
+      quiz === "CET6" ? "cet6_word" : "cet4_word",
+      translationdefaultMaxCount,
+    ).then((res) => {
+      setLoading(false);
+      setQuizList(res);
+      setCurrent(0);
+    });
   };
 
   const submit = (val: string) => {
@@ -59,13 +61,13 @@ export default function Translation() {
 
   const isSuccess = status === "success";
   const isError = status === "error";
-  const isTranslationFinished = current + 1 === quizcount;
+  const isTranslationFinished = current + 1 >= quizcount;
   const item = quizList[current];
 
   useEffect(() => {
     inputRef.current?.focus();
     requestList();
-  }, []);
+  }, [quiz]);
 
   useEffect(() => {
     if (status !== "normal") {
@@ -80,11 +82,14 @@ export default function Translation() {
         }
       }, animateDuration);
     }
-  }, [isSuccess, status]);
+  }, [inputRef, isSuccess, status]);
 
+  if (quizcount === 0 || !item) {
+    return null;
+  }
   return (
-    <div className={`gap-2 flex flex-col ${montserrat.className}`}>
-      <div className="flex justify-between md:text-lg items-baseline">
+    <div className={`flex flex-col gap-2 ${montserrat.className}`}>
+      <div className="flex items-baseline justify-between md:text-lg">
         <span>{t("home_quiz_type_translation")}</span>
         {!isTranslationFinished && (
           <span className="text-sm md:text-base">
@@ -93,12 +98,12 @@ export default function Translation() {
         )}
       </div>
       {loading ? (
-        <div className=" w-full h-32 flex justify-center items-center">
+        <div className="flex h-32 w-full items-center justify-center">
           <Loading className="fill-slate-200 text-transparent" />
         </div>
       ) : isTranslationFinished ? (
         <div className="card text-center">
-          <div className="flex flex-col items-center mb-2">
+          <div className="mb-2 flex flex-col items-center">
             <div>Congratulations!</div>
             <p className="text-sm text-slate-200">
               You finished a round of {quizcount} quiz!
@@ -108,7 +113,7 @@ export default function Translation() {
             </p>
           </div>
           <button
-            className="border rounded-md p-1 text-sm"
+            className="rounded-md border p-1 text-sm"
             onClick={requestList}
           >
             Continue
@@ -116,13 +121,13 @@ export default function Translation() {
         </div>
       ) : (
         <div
-          className={`flex flex-col md:w-full gap-4  animate__animated ${
+          className={`animate__animated flex flex-col gap-4 md:w-full ${
             isSuccess
               ? "animate__backOutDown"
               : "animate__fadeInDownBig animate__faster"
           }`}
         >
-          <div className={`card flex flex-col md:w-full gap-4`}>
+          <div className={`card flex flex-col gap-4 md:w-full`}>
             <div>
               <div className="text-sm text-fuchsia-100">中文释义: </div>
               {item.translations.map((t, i) => (
@@ -135,7 +140,7 @@ export default function Translation() {
             </div>
 
             <div>
-              <div className={`mb-2 mt-4relative`}>
+              <div className={`mt-4relative mb-2`}>
                 <span className="text-sm text-fuchsia-100">输入单词:</span>
 
                 <div className="relative flex items-center gap-2">
@@ -150,15 +155,11 @@ export default function Translation() {
                       onChange={(e) => setValue(e.target.value)}
                       ref={inputRef}
                       type="text"
-                      className={`border border-slate-100 bg-transparent rounded-md text-md outline-none
-           flex-1 shadow-sm  p-1 w-full text-white
-         
-          ${isError ? "border-transparent bg-red-900/30" : ""}  `}
+                      className={`text-md w-full flex-1 rounded-md border border-slate-100 bg-transparent p-1 text-white shadow-sm outline-none ${isError ? "border-transparent bg-red-900/30" : ""} `}
                     />
                     {!!value && (
                       <div
-                        className="absolute right-1 top:0 bottom-0 h-full w-6 p-1 flex items-center justify-center cursor-pointer
-                     text-red-900/40 md:hover:text-red-800"
+                        className="top:0 absolute bottom-0 right-1 flex h-full w-6 cursor-pointer items-center justify-center p-1 text-red-900/40 md:hover:text-red-800"
                         onClick={emptyValue}
                       >
                         <Empty />
@@ -167,8 +168,7 @@ export default function Translation() {
                   </div>
 
                   <div
-                    className=" cursor-pointer w-5 h-5 flex items-center justify-center 
-                md:hover:text-slate-200 overflow-hidden"
+                    className="flex h-5 w-5 cursor-pointer items-center justify-center overflow-hidden md:hover:text-slate-200"
                     onClick={() => submit(value)}
                   >
                     <Enter />
@@ -182,8 +182,7 @@ export default function Translation() {
             <button
               type="button"
               onClick={() => setShowAnswer(true)}
-              className="text-white outline-none border-none 
-           bg-gradient-to-br from-pink-500 to-orange-400 md:hover:bg-gradient-to-bl rounded-lg px-4 py-1.5"
+              className="rounded-lg border-none bg-gradient-to-br from-pink-500 to-orange-400 px-4 py-1.5 text-white outline-none md:hover:bg-gradient-to-bl"
             >
               Show Answer
             </button>

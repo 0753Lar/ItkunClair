@@ -27,24 +27,19 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
-  @apply bg-opacity-20 bg-white 
-  rounded-xl 
-  border-[1px] border-white border-opacity-30 
-  p-2 
-  shadow-sm;
+  @apply rounded-xl border-[1px] border-white border-opacity-30 bg-white bg-opacity-20 p-2 shadow-sm;
 }
 
 .glass-header {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
-  @apply bg-opacity-10 bg-slate-50  shadow-lg
-  w-28 h-14 rotate-6 rounded-lg;
+  @apply h-14 w-28 rotate-6 rounded-lg bg-slate-50 bg-opacity-10 shadow-lg;
 }
 
 .glass-bg {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  @apply bg-opacity-20 bg-slate-200 border-slate-50 border-opacity-20 border-2 shadow-lg rounded-2xl;
+  @apply rounded-2xl border-2 border-slate-50 border-opacity-20 bg-slate-200 bg-opacity-20 shadow-lg;
 }
 
 @keyframes bgWiggle {
@@ -63,3 +58,10 @@ body {
   background-size: 200% 200%;
   animation: bgWiggle 2s ease-in-out 0s infinite;
 }
+/* 
+.card-🌈 {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  @apply rounded-xl border-2 border-gray-100/10 bg-[url("@/assets/images/Glassmorphism-Background.png")] bg-[length:200%_200%] bg-center text-slate-900/80 shadow-lg;
+} */
