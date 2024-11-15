@@ -38,7 +38,9 @@ export default function Translation() {
   };
 
   const submit = (val: string) => {
-    if (val.trim() === item.word.trim()) {
+    if (
+      val.trim().toLocaleLowerCase() === item.word.trim().toLocaleLowerCase()
+    ) {
       setStatus("success");
     } else {
       setStatus("error");
