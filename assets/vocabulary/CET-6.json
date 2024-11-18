@@ -16852,7 +16852,7 @@
   },
   {
     "word": "misled",
-    "translations": [{ "translation": "(mislead过去式)误导" }]
+    "translations": [{ "translation": "(mislead过去式)误导", "type": "v" }]
   },
   {
     "word": "elimination",

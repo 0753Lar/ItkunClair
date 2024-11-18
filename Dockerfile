@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-COPY .env.docker .env.local
+COPY .env.docker .env
 
 
 EXPOSE 3000

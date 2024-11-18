@@ -25,7 +25,7 @@ npm run docker-compose
 
 ### Manual Setup (Without Docker) ⚙️
 
-1. Copy the `.env.local.template` and change name as `.env.local`, then replace the MONGODB_URI with your personal mongodb url.
+1. Copy the `.env.template` and change name as `.env`, then replace the MONGODB_URI with your personal mongodb url.
 
 ```dotenv
 MONGODB_URI="mongodb://127.0.0.1:27017/itkunclair"
