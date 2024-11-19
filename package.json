@@ -7,12 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "npx tsx ./scripts/seed.ts",
+    "seed": "tsx ./scripts/seed.ts",
+    "ai": "tsx ./ai/scripts/index.ts",
     "docker-compose": "docker-compose --env-file .env.docker up --build"
   },
   "dependencies": {
     "mongoose": "^8.8.0",
     "next": "15.0.2",
+    "openai": "^4.72.0",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028"
   },
@@ -22,6 +24,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "animate.css": "^4.1.1",
+    "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "eslint": "^8",
     "eslint-config-next": "15.0.2",

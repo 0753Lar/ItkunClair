@@ -49,9 +49,7 @@ The application should now be running at [http://localhost:3000](http://localhos
 ## Todo List
 
 - [x] &nbsp;Integrate local mongodb to docker. </br>
-- [x] &nbsp;Replace loading component with pretty loader </br>
 - [ ] &nbsp;Add 'skip' button for skipping current word </br>
 - [ ] &nbsp;Add husky for linting before commit change. </br>
-- [ ] &nbsp;Beautify 'Show Answer' part </br>
 - [ ] &nbsp;Integrate AI to come up with the training suggestion</br>
 - [ ] &nbsp;Add more word books, current CET4 and CET6 are no clear.</br>
