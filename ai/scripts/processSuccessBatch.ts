@@ -1,5 +1,5 @@
 import path from "path";
-import { handleJSONLFile } from "../utils";
+import { handleJSONLFile } from "../../utils/nodeUtils";
 import { successLogLocatioin } from "./batch";
 
 import fs from "fs";

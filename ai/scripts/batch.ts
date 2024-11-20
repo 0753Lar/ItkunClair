@@ -4,10 +4,10 @@ import {
   getAlphabet,
   handleJSONLFile,
   Letter,
-} from "../utils";
+} from "../../utils/nodeUtils";
 import path from "path";
 import OpenAI, { toFile } from "openai";
-import { sleep } from "../utils";
+import { sleep } from "../../utils/nodeUtils";
 import { qwenPlus } from "../modals/qwen";
 import prompt from "../data/template/word";
 

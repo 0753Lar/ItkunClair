@@ -44,6 +44,33 @@ const wordTemplate = {
     "Think of 'example' as something you take out (ex-) to show others (-ample).",
 };
 
+export type FormalWord = {
+  word: string;
+  meaning: Record<string, string>;
+  phonetics: {
+    us: string;
+    uk: string;
+  };
+  examples: {
+    context: string;
+    sentence: string;
+    translation: string;
+  }[];
+  root_analysis: {
+    root: string;
+    meaning: string;
+    derived_words: {
+      word: string;
+      meaning: string;
+    }[];
+  };
+  collocations: {
+    phrase: string;
+    translation: string;
+  }[];
+  mnemonics: string;
+};
+
 const systemPrompt = () =>
   `假设你是一名中英文双语教育专家，拥有帮助将中文视为母语的用户理解和记忆英语单词的专长。`;
 

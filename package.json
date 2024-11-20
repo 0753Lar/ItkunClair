@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "tsx ./scripts/seed.ts",
+    "seed": "tsx ./scripts/seedFormalWord.ts",
     "ai": "tsx ./ai/scripts/index.ts",
     "docker-compose": "docker-compose --env-file .env.docker up --build"
   },
