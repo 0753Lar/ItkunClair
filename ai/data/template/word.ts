@@ -36,12 +36,6 @@ const wordTemplate = {
       { word: "exampled", meaning: "作为例子的" },
     ],
   },
-  word_forms: {
-    noun: ["example", "examples"],
-    verb: ["exemplify", "exemplified", "exemplifies", "exemplifying"],
-    adjective: ["exemplary"],
-    adverb: ["exemplarily"],
-  },
   collocations: [
     { phrase: "set an example", translation: "树立榜样" },
     { phrase: "for example", translation: "例如" },
@@ -64,17 +58,16 @@ const userPrompt = (word: string) => `
 
 ### 列举例句
 
-- 根据所需，为该单词提供至少 3 个不同场景下的使用方法和例句。并且附上中文翻译，以帮助用户更深入地理解单词意义。
+- 根据所需，为该单词提供至少3个不同场景下的使用方法和例句。并且附上中文翻译，以帮助用户更深入地理解单词意义。
 
 ### 词根分析
 
 - 分析并展示单词的词根；
 - 列出由词根衍生出来的其他单词；
 
-### 单词变形
+### 单词搭配
 
-- 列出单词对应的名词、单复数、动词、不同时态、形容词、副词等的变形以及对应的中文翻译。
-- 列出单词对应的固定搭配、组词以及对应的中文翻译。
+- 列出单词对应的常见固定搭配、组词以及对应的中文翻译。
 
 ### 记忆辅助
 

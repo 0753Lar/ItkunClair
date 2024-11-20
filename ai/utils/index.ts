@@ -1,20 +1,46 @@
 import fs from "fs";
 import readline from "readline";
 
-/**
- * @returns ['a','b','c',...,'z']
- */
-export function getAlphabet() {
-  const alphabet = Array.from({ length: 26 }, (_, i) =>
-    String.fromCharCode(97 + i),
-  );
+export type Letter = Uppercase<ReturnType<typeof getAlphabet>[number]>;
 
-  return alphabet;
+export function getAlphabet() {
+  return [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+  ] as const;
 }
 
-export function appendWithTimestamp(targetOutput: string, data: string) {
+export function appendWithTimestamp(
+  targetOutput: string,
+  data: string,
+  flag?: string,
+) {
   const currentTime = new Date().toISOString();
-  const formattedData = `{"${currentTime}":${data}}\n`;
+  const formattedData = `[${currentTime}]${flag ? "-" + flag : ""}\n${data}\n`;
 
   if (!fs.existsSync(targetOutput)) {
     fs.writeFileSync(targetOutput, formattedData, "utf8");
@@ -27,29 +53,29 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function readJSONLFile(
+export async function handleJSONLFile(
   filePath: string,
-): Promise<unknown[] | null> {
+  lineHandler: (line: string) => Promise<void>,
+  from?: string,
+) {
   const fileStream = fs.createReadStream(filePath);
 
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity, // Recognize all instances of CR LF (\r\n) as line breaks
   });
-
-  const arr = [];
-
+  let start = Boolean(from) ? false : true;
   for await (const line of rl) {
-    if (line.trim()) {
-      try {
-        const jsonObject = JSON.parse(line);
-        arr.push(jsonObject);
-      } catch (error) {
-        console.error("Invalid JSON line:\n", error);
-        return null;
+    const trimedLine = line.trim();
+    if (!start) {
+      if (trimedLine.startsWith(from!)) {
+        start = true;
       }
+    } else {
+      await lineHandler(trimedLine);
     }
   }
-
-  return arr;
+  if (!start) {
+    console.error("cannot find the line start with: ", from);
+  }
 }
