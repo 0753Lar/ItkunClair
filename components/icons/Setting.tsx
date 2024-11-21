@@ -4,15 +4,28 @@ import { useQuizContext } from "@/app/context/quizContext";
 import { useLocale } from "@/hooks/useLocale";
 import EditableNumber from "../EditableNumber";
 import {
+  allChallenge,
   allQuiz,
   translationdefaultMaxCount,
   translationdefaultMinCount,
 } from "@/utils/config";
 import Cascader from "../Cascader";
+import Switch from "./Switch";
+import { useRootContext } from "@/app/context/rootContext";
 
 export default function Setting() {
   const [isSetting, setIsSetting] = useState(false);
-  const { quiz, updateQuiz, quizcount, updateQuizcount } = useQuizContext();
+  const {
+    quiz,
+    quizType,
+    updateQuizType,
+    updateQuiz,
+    quizcount,
+    updateQuizcount,
+  } = useQuizContext();
+
+  const { config, updateConfig } = useRootContext();
+
   const t = useLocale();
 
   return (
@@ -37,15 +50,22 @@ export default function Setting() {
       <Modal open={isSetting} onClose={() => setIsSetting(false)}>
         <div className="flex flex-col gap-2 pt-1 text-sm">
           <div className="flex justify-between">
-            <span>{t("home_quiz_vocabulary_title")}</span> <span>{quiz}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>{t("home_quiz_challenge_title")}:</span>
+            <span>{t("home_quiz_vocabulary_title")}:</span>
             <div>
               <Cascader
                 options={allQuiz.map((v) => ({ label: v }))}
                 selectedLabel={quiz}
                 onSelect={updateQuiz as (val: string) => void}
+              />
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <span>{t("home_quiz_challenge_title")}:</span>
+            <div>
+              <Cascader
+                options={allChallenge.map((v) => ({ label: v }))}
+                selectedLabel={quizType}
+                onSelect={updateQuizType as (val: string) => void}
               />
             </div>
           </div>
@@ -58,6 +78,36 @@ export default function Setting() {
               max={translationdefaultMaxCount}
             />
           </div>
+          {quizType === "translation" && (
+            <>
+              <div className="flex justify-between">
+                <span>展示中文释义:</span>
+                <Switch
+                  isOn={config.translation.showMeaning}
+                  onToggle={() =>
+                    updateConfig((config) => {
+                      config.translation.showMeaning =
+                        !config.translation.showMeaning;
+                      return config;
+                    })
+                  }
+                />
+              </div>
+              <div className="flex justify-between">
+                <span>展示示例:</span>
+                <Switch
+                  isOn={config.translation.showExamples}
+                  onToggle={() =>
+                    updateConfig((config) => {
+                      config.translation.showExamples =
+                        !config.translation.showExamples;
+                      return config;
+                    })
+                  }
+                />
+              </div>
+            </>
+          )}
         </div>
       </Modal>
     </div>

@@ -56,7 +56,7 @@ const EditableNumber = ({
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center overflow-hidden">
       <button
         onClick={handleDecrease}
         className="px-2 font-bold md:text-lg md:hover:opacity-80"
@@ -72,13 +72,13 @@ const EditableNumber = ({
             onChange={onInputChange}
             onBlur={handleSave}
             onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            className="w-full border-gray-300 bg-transparent text-center outline-none"
+            className="w-full h-full text-sm border-gray-300 bg-transparent text-center outline-none"
             autoFocus
           />
         ) : (
           <span
             onClick={() => setIsEditing(true)}
-            className="w-full cursor-pointer text-center font-semibold md:hover:opacity-80"
+            className="w-full h-full text-sm cursor-pointer text-center font-semibold md:hover:opacity-80"
           >
             {value}
           </span>

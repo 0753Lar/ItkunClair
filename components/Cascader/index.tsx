@@ -35,7 +35,7 @@ const Cascader = ({ options, onSelect, selectedLabel }: CascaderProps) => {
       </button>
 
       {isOpen && (
-        <div className="absolute w-full rounded-lg border-[1px] border-slate-50 border-opacity-20 bg-slate-100/90 bg-clip-padding shadow-lg backdrop-blur-3xl backdrop-filter">
+        <div className="absolute w-full rounded-md border-[1px] border-slate-50 border-opacity-20 bg-slate-100/90 bg-clip-padding shadow-lg backdrop-blur-3xl backdrop-filter z-20">
           <div className="">
             {options.map((option) => (
               <div

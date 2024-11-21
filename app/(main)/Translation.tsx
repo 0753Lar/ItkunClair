@@ -1,14 +1,14 @@
-import { IWord } from "@/lib/mongoose/models/Word";
 import { createRef, KeyboardEventHandler, useEffect, useState } from "react";
 import "animate.css";
 import Enter from "@/components/icons/Enter";
 import { useLocale } from "@/hooks/useLocale";
-import { fetchWords } from "@/lib/mongoose/actions/fetchWords";
-import { useQuizContext } from "../context/quizContext";
+import { fetchFormalWords } from "@/lib/mongoose/actions/fetchWords";
+import { mapWordModal, useQuizContext } from "../context/quizContext";
 import Empty from "@/components/icons/Empty";
-import { montserrat } from "../fonts";
+import { montserrat, notoSans } from "../fonts";
 import Loading from "@/components/icons/Loading";
-import { translationdefaultMaxCount } from "@/utils/config";
+import { FormalWord } from "@/ai/data/template/word";
+import { useRootContext } from "../context/rootContext";
 
 const animateDuration = 500;
 
@@ -16,10 +16,11 @@ type InputStatus = "success" | "error" | "normal";
 
 export default function Translation() {
   const { quiz, quizcount } = useQuizContext();
+  const { config } = useRootContext();
   const t = useLocale();
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
-  const [quizList, setQuizList] = useState<IWord[]>([]);
+  const [quizList, setQuizList] = useState<FormalWord[]>([]);
   const [status, setStatus] = useState<InputStatus>("normal");
   const [value, setValue] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
@@ -27,10 +28,7 @@ export default function Translation() {
 
   const requestList = () => {
     setLoading(true);
-    fetchWords(
-      quiz === "CET6" ? "cet6_word" : "cet4_word",
-      translationdefaultMaxCount,
-    ).then((res) => {
+    fetchFormalWords(mapWordModal(quiz), quizcount).then((res) => {
       setLoading(false);
       setQuizList(res);
       setCurrent(0);
@@ -69,7 +67,8 @@ export default function Translation() {
   useEffect(() => {
     inputRef.current?.focus();
     requestList();
-  }, [quiz]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quiz, quizcount]);
 
   useEffect(() => {
     if (status !== "normal") {
@@ -89,6 +88,9 @@ export default function Translation() {
   if (quizcount === 0 || !item) {
     return null;
   }
+
+  console.log(">> quizList: \n", quizList);
+
   return (
     <div className={`flex flex-col gap-2 ${montserrat.className}`}>
       <div className="flex items-baseline justify-between md:text-lg">
@@ -104,23 +106,7 @@ export default function Translation() {
           <Loading className="fill-slate-200 text-transparent" />
         </div>
       ) : isTranslationFinished ? (
-        <div className="card text-center">
-          <div className="mb-2 flex flex-col items-center">
-            <div>Congratulations!</div>
-            <p className="text-sm text-slate-200">
-              You finished a round of {quizcount} quiz!
-            </p>
-            <p className="text-sm text-slate-200">
-              Click on below button to start a new round.
-            </p>
-          </div>
-          <button
-            className="rounded-md border p-1 text-sm"
-            onClick={requestList}
-          >
-            Continue
-          </button>
-        </div>
+        <Congratulation onClick={requestList} />
       ) : (
         <div
           className={`animate__animated flex flex-col gap-4 md:w-full ${
@@ -130,16 +116,21 @@ export default function Translation() {
           }`}
         >
           <div className={`card flex flex-col gap-4 md:w-full`}>
-            <div>
-              <div className="text-sm text-fuchsia-100">中文释义: </div>
-              {item.translations.map((t, i) => (
-                <div key={`translations-${i}`}>
-                  <span className="text-md text-white">
-                    {t.type}. {t.translation}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {config.translation.showMeaning && (
+              <div>
+                <Meaning meaning={item.meaning} />
+              </div>
+            )}
+
+            {config.translation.showExamples && (
+              <div>
+                <Example
+                  examples={item.examples}
+                  word={item.word}
+                  value={value}
+                />
+              </div>
+            )}
 
             <div>
               <div className={`mt-4relative mb-2`}>
@@ -191,7 +182,15 @@ export default function Translation() {
 
             {showAnswer && (
               <div>
-                Answer is <span className="text-xl">{item.word}</span>
+                <div className="text-xl">{item.word}</div>
+                <div>
+                  {Object.entries(item.phonetics).map((v, i) => (
+                    <div key={`translations-answer-phonetics-${i}`}>
+                      <span>{v[0]}:&nbsp;</span>
+                      <span>{v[1]}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -199,4 +198,90 @@ export default function Translation() {
       )}
     </div>
   );
+}
+
+function Congratulation({ onClick }: { onClick?: () => void }) {
+  const { quizcount } = useQuizContext();
+  return (
+    <div className="card text-center">
+      <div className="mb-2 flex flex-col items-center">
+        <div>Congratulations!</div>
+        <p className="text-sm text-slate-200">
+          You finished a round of {quizcount} quiz!
+        </p>
+        <p className="text-sm text-slate-200">
+          Click on below button to start a new round.
+        </p>
+      </div>
+      <button className="rounded-md border p-1 text-sm" onClick={onClick}>
+        Continue
+      </button>
+    </div>
+  );
+}
+
+function Meaning({ meaning }: Pick<FormalWord, "meaning">) {
+  return (
+    <div>
+      <div className="text-sm text-fuchsia-100">中文释义: </div>
+      {Object.entries(meaning).map((t, i) => (
+        <div key={`translations-meaning-${i}`}>
+          <span className="text-md text-white">
+            {t[0]}. {t[1]}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Example({
+  examples,
+  word,
+  value,
+}: Pick<FormalWord, "examples" | "word"> & { value: string }) {
+  const listTobeShow = examples
+    .map((v) => maskWordFromSentence(word, value, v.sentence))
+    .filter((v) => !!v);
+
+  return (
+    <div>
+      <div className="text-sm text-fuchsia-100">示例: </div>
+      {!listTobeShow.length ? (
+        <div className="w-full text-center">sorry, no examples to show</div>
+      ) : (
+        <div>
+          {listTobeShow.map((v, i) => (
+            <div
+              key={`translations-example-${i}`}
+              className={`mb-2 flex ${notoSans.className}`}
+            >
+              <span className={`text-sm leading-tight`}>{i + 1}.</span>
+              <div className="text-sm leading-tight text-white">
+                <span>{v[0]}</span>
+                <span className="relative">
+                  <span className="border-b-[1px] border-red-100 text-transparent">
+                    {v[1]}
+                  </span>
+                  <span className="absolute inset-0">
+                    {value.slice(0, word.length)}
+                  </span>
+                </span>
+                <span className="leading-tight">{v[2]}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function maskWordFromSentence(word: string, value: string, sentence: string) {
+  if (!sentence.includes(word)) {
+    return null;
+  }
+  const [start, end] = sentence.split(word);
+  const mask = word;
+  return [start, mask, end] as const;
 }

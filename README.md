@@ -1,5 +1,6 @@
 ## itkunclair
-Welcome to **itkunClair** ! 
+
+Welcome to **itkunClair** !
 
 This project provides an efficient setup to get your application up and running with two different approaches:
 
@@ -9,19 +10,21 @@ This project provides an efficient setup to get your application up and running 
 <hr />
 
 ### Getting Started
-#### Prerequisites
-* Ensure you have [Node.js](https://nodejs.org/en) installed.
-* If using Docker, ensure [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) are installed.
 
+#### Prerequisites
+
+- Ensure you have [Node.js](https://nodejs.org/en) installed.
+- If using Docker, ensure [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) are installed.
 
 ### Quick Start with Docker 🐳
+
 Docker will automatically pull the necessary images, set up the MongoDB instance, seed data, and start the application.
 
-Run the command: 
-```bash 
+Run the command:
+
+```bash
 npm run docker-compose
 ```
-
 
 ### Manual Setup (Without Docker) ⚙️
 
@@ -32,24 +35,27 @@ MONGODB_URI="mongodb://127.0.0.1:27017/itkunclair"
 ```
 
 2. Seed the database:
+
 ```bash
     npm run seed
     # or you can override the existing table in same database
     npm run seed -- --override
 ```
 
-3. start the application, then 
+3. start the application, then
+
 ```bash
 npm run start
 ```
 
 The application should now be running at [http://localhost:3000](http://localhost:3000).
 
-
 ## Todo List
 
 - [x] &nbsp;Integrate local mongodb to docker. </br>
 - [ ] &nbsp;Add 'skip' button for skipping current word </br>
+- [ ] &nbsp;Data persistence</br>
+- [ ] &nbsp;Add Pronunciation ability </br>
 - [ ] &nbsp;Add husky for linting before commit change. </br>
 - [ ] &nbsp;Integrate AI to come up with the training suggestion</br>
-- [ ] &nbsp;Add more word books, current CET4 and CET6 are no clear.</br>
+- [ ] &nbsp;Migrate to tauri to build cross platform</br>
