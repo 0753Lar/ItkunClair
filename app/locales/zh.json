@@ -2,5 +2,11 @@
   "home_quiz_vocabulary_title": "词库",
   "home_quiz_challenge_title": "挑战",
   "home_quiz_type_translation": "翻译",
-  "home_quiz_count_title": "题目数量"
+  "home_quiz_count_title": "题目数量",
+  "home_translation_meaning_title": "中文释义",
+  "home_translation_examples_title": "例句",
+  "home_translation_examples_empty_error": "抱歉，暂时没有例句展示！",
+  "home_translation_congratulation_title": "Congratulations!",
+  "home_translation_enter_title": "输入单词",
+  "home_translation_show_answer_title": "查看答案"
 }

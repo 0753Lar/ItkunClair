@@ -134,7 +134,9 @@ export default function Translation() {
 
             <div>
               <div className={`mt-4relative mb-2`}>
-                <span className="text-sm text-fuchsia-100">输入单词:</span>
+                <span className="text-sm text-fuchsia-100">
+                  {t("home_translation_enter_title")}:
+                </span>
 
                 <div className="relative flex items-center gap-2">
                   <div
@@ -177,7 +179,7 @@ export default function Translation() {
               onClick={() => setShowAnswer(true)}
               className="rounded-lg border-none bg-gradient-to-br from-pink-500 to-orange-400 px-4 py-1.5 text-white outline-none md:hover:bg-gradient-to-bl"
             >
-              Show Answer
+              {t("home_translation_show_answer_title")}
             </button>
 
             {showAnswer && (
@@ -202,10 +204,11 @@ export default function Translation() {
 
 function Congratulation({ onClick }: { onClick?: () => void }) {
   const { quizcount } = useQuizContext();
+  const t = useLocale();
   return (
     <div className="card text-center">
       <div className="mb-2 flex flex-col items-center">
-        <div>Congratulations!</div>
+        <div>{t("home_translation_congratulation_title")}</div>
         <p className="text-sm text-slate-200">
           You finished a round of {quizcount} quiz!
         </p>
@@ -221,9 +224,12 @@ function Congratulation({ onClick }: { onClick?: () => void }) {
 }
 
 function Meaning({ meaning }: Pick<FormalWord, "meaning">) {
+  const t = useLocale();
   return (
     <div>
-      <div className="text-sm text-fuchsia-100">中文释义: </div>
+      <div className="text-sm text-fuchsia-100">
+        {t("home_translation_meaning_title")}:{" "}
+      </div>
       {Object.entries(meaning).map((t, i) => (
         <div key={`translations-meaning-${i}`}>
           <span className="text-md text-white">
@@ -240,15 +246,21 @@ function Example({
   word,
   value,
 }: Pick<FormalWord, "examples" | "word"> & { value: string }) {
+  const t = useLocale();
+
   const listTobeShow = examples
-    .map((v) => maskWordFromSentence(word, value, v.sentence))
+    .map((v) => splitWordFromSentence(word, value, v.sentence))
     .filter((v) => !!v);
 
   return (
     <div>
-      <div className="text-sm text-fuchsia-100">示例: </div>
+      <div className="text-sm text-fuchsia-100">
+        {t("home_translation_examples_title")}:
+      </div>
       {!listTobeShow.length ? (
-        <div className="w-full text-center">sorry, no examples to show</div>
+        <div className="w-full text-center">
+          {t("home_translation_examples_empty_error")}
+        </div>
       ) : (
         <div>
           {listTobeShow.map((v, i) => (
@@ -260,7 +272,7 @@ function Example({
               <div className="text-sm leading-tight text-white">
                 <span>{v[0]}</span>
                 <span className="relative">
-                  <span className="border-b-[1px] border-red-100 text-transparent">
+                  <span className="border-b-[1px] border-emerald-200 text-transparent">
                     {v[1]}
                   </span>
                   <span className="absolute inset-0">
@@ -277,7 +289,7 @@ function Example({
   );
 }
 
-function maskWordFromSentence(word: string, value: string, sentence: string) {
+function splitWordFromSentence(word: string, value: string, sentence: string) {
   if (!sentence.includes(word)) {
     return null;
   }

@@ -54,6 +54,7 @@ The application should now be running at [http://localhost:3000](http://localhos
 
 - [x] &nbsp;Integrate local mongodb to docker. </br>
 - [x] &nbsp;Add husky for linting before commit change. </br>
+- [ ] &nbsp;Change useLocate to i18n.</br>
 - [ ] &nbsp;Add 'skip' button for skipping current word </br>
 - [ ] &nbsp;Data persistence</br>
 - [ ] &nbsp;Add Pronunciation ability </br>
