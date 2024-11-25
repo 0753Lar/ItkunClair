@@ -1,10 +1,17 @@
 import dotenv from "dotenv";
 import path from "path";
-import { batchSync } from "./batchSync";
+import { batchSync, getTaskPath } from "./batchSync";
+
 dotenv.config();
 
 async function main() {
-  await batchSync(path.resolve(__dirname, "../data/raw/Oxford_raw_5000.txt"));
+  const targetRaw = path.resolve(
+    __dirname,
+    "../data/raw/",
+    (await getTaskPath()).trim(),
+  );
+
+  await batchSync(targetRaw);
 }
 
 main();

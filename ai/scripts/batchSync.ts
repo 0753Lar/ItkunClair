@@ -4,10 +4,21 @@ import readline from "readline";
 import { huggingfaceCall } from "./huggingfaceCall";
 import { userPrompt } from "../data/template/word";
 import { ensureWriteFileSync } from "@/utils/nodeUtils";
+import path from "path";
+
+export async function getTaskPath() {
+  return path.resolve(__dirname, "./task.txt");
+}
 
 export async function batchSync(rawLocation: string) {
   const copyPath = copyRaw(rawLocation);
-  await processFile(copyPath);
+
+  const isAllFinished = await isFileEmpty(copyPath);
+  if (isAllFinished) {
+    fs.writeFileSync(await getTaskPath(), "", "utf8");
+  } else {
+    await processFile(copyPath);
+  }
 }
 
 function copyRaw(rawLocation: string) {
@@ -65,4 +76,25 @@ async function processFile(wipFile: string) {
   rl.close();
   writeStream?.end();
   fs.renameSync(tempFilePath, wipFile);
+}
+
+async function isFileEmpty(filePath: string) {
+  try {
+    const fileStream = fs.createReadStream(filePath);
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity,
+    });
+
+    for await (const line of rl) {
+      if (line.trim() !== "") {
+        return false;
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error(`>> Error reading file: ${error}`);
+    return false;
+  }
 }

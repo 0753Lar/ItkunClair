@@ -1,0 +1,68 @@
+name: Daily AI Task
+
+on:
+  schedule:
+    - cron: "0 10 * * *"
+  push:
+    branches:
+      - chore/timer
+
+jobs:
+  ai_task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Skip if AI Task Branch
+        if: github.ref == 'refs/heads/chore/timer' 
+        run: |
+          echo "Push from AI task branch detected. Skipping workflow."
+          exit 0
+
+      - name: Check Task Enabled
+        run: |
+          if [ ! -f "task-switch.txt" ]; then
+          echo "Control file not found. Exiting."
+          exit 0
+          fi
+          if [ "$(cat task-switch.txt)" == "" ]; then
+          echo "Empty task. Exiting."
+          exit 0
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Create New Branch
+        run: |
+          git config user.name "0753Ljuc"
+          git config user.email "limequery@163.com"
+          git checkout chore/timer
+          git commit --allow-empty -m "Daily task from chore/timer"
+
+      - name: Run Task
+        run: |
+          for i in $(seq 1 800); do
+            echo "Run #$i"
+
+            # Run the AI script
+            npm run ai
+
+            # Add changes
+            git add .
+
+            # Amend the last commit
+            git commit --amend 
+
+            # Force push the branch
+            git push origin chore/timer --force
+
+            # Sleep for 20 seconds to allow 3 runs per minute
+            sleep 20
+          done
