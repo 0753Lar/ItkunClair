@@ -61,4 +61,6 @@ jobs:
             git commit --amend -m "AI Task Iteration #$i"
 
             git push origin chore/timer --force
+            
+            sleep 3
           done
