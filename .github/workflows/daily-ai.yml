@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Skip if AI Task Branch
-        if: github.ref == 'refs/heads/chore/timer' 
+        if: github.ref == 'refs/heads/chore/timer'
         run: |
           echo "Push from AI task branch detected. Skipping workflow."
           exit 0
@@ -47,6 +47,8 @@ jobs:
           git commit --allow-empty -m "Daily task from chore/timer"
 
       - name: Run Task
+        env:
+          HUGGING_FACE_API_KEY: ${{ secrets.HUGGING_FACE_API_KEY }}
         run: |
           for i in $(seq 1 800); do
             echo "Run #$i"
@@ -58,7 +60,7 @@ jobs:
             git add .
 
             # Amend the last commit
-            git commit --amend 
+            git commit --amend -m "AI Task Iteration #$i"
 
             # Force push the branch
             git push origin chore/timer --force

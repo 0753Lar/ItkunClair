@@ -75,8 +75,14 @@ export async function huggingfaceCall(userContent: string) {
         Authorization: `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
         "Content-Type": "application/json",
       },
-      httpAgent: new HttpsProxyAgent("http:localhost:7890"),
-      httpsAgent: new HttpsProxyAgent("http:localhost:7890"),
+      httpAgent:
+        process.argv[2] === "--proxy"
+          ? new HttpsProxyAgent("http:localhost:7890")
+          : undefined,
+      httpsAgent:
+        process.argv[2] === "--proxy"
+          ? new HttpsProxyAgent("http:localhost:7890")
+          : undefined,
     },
   );
 
