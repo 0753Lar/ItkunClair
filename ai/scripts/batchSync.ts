@@ -46,6 +46,7 @@ async function processFile(wipFile: string) {
     if (!line.trim()) {
       continue;
     }
+    console.log(`>> In progress word: ${line}`);
     if (!lineRemoved) {
       let success = false;
       while (!success) {
