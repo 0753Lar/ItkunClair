@@ -34,7 +34,7 @@ async function processFile(wipFile: string) {
   const tempFilePath = wipFile + ".tmp"; // Temporary file path
   const targetOutputPath = wipFile.split(".").join("_result.");
   const readStream = fs.createReadStream(wipFile);
-  let writeStream: fs.WriteStream | null = null;
+  const writeStream = fs.createWriteStream(tempFilePath);
 
   const rl = readline.createInterface({
     input: readStream,
@@ -59,7 +59,6 @@ async function processFile(wipFile: string) {
             const obj = JSON.parse(text); // check the result parsable or not
             ensureWriteFileSync(targetOutputPath, JSON.stringify(obj) + "\n");
             success = true;
-            writeStream = fs.createWriteStream(tempFilePath);
             process.stdout.write(
               `>============================> Finished: [${line.trim()}] with ${count} times`,
             );
