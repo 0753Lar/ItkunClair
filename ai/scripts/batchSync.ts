@@ -47,7 +47,7 @@ async function processFile(wipFile: string) {
       continue;
     }
     if (!lineRemoved) {
-      console.log(`>> In progress word: ${line}`);
+      console.log(`>============================> In progress word: [${line}]`);
       let success = false;
       while (!success) {
         count++;
@@ -61,7 +61,7 @@ async function processFile(wipFile: string) {
             success = true;
             writeStream = fs.createWriteStream(tempFilePath);
             process.stdout.write(
-              `Finished: ${line.trim()} with ${count} times`,
+              `>============================> Finished: [${line.trim()}] with ${count} times`,
             );
           } catch (error) {
             console.log(">> Parsing error: ", error, "\n");
