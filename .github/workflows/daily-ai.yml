@@ -3,6 +3,8 @@ name: Daily AI Task
 on:
   schedule:
     - cron: "0 3 * * *"
+    - cron: "0 4 * * *"
+    - cron: "0 5 * * *"
   push:
     branches:
       - chore/timer
@@ -50,21 +52,13 @@ jobs:
         env:
           HUGGING_FACE_API_KEY: ${{ secrets.HUGGING_FACE_API_KEY }}
         run: |
-          for i in $(seq 1 800); do
+          for i in $(seq 1 250); do
             echo "Run #$i"
-
-            # Run the AI script
             npm run ai
 
-            # Add changes
             git add .
 
-            # Amend the last commit
             git commit --amend -m "AI Task Iteration #$i"
 
-            # Force push the branch
             git push origin chore/timer --force
-
-            # Sleep for 20 seconds to allow 3 runs per minute
-            sleep 20
           done
