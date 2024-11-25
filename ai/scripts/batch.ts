@@ -8,8 +8,9 @@ import {
 import path from "path";
 import OpenAI, { toFile } from "openai";
 import { sleep } from "../../utils/nodeUtils";
-import { qwenPlus } from "../modals/qwen";
-import prompt from "../data/template/word";
+import { Modal } from "../modals/modalDefinition";
+import { HttpsProxyAgent } from "https-proxy-agent";
+import { systemPrompt, userPrompt } from "../data/template/word";
 
 dotenv.config();
 
@@ -26,9 +27,12 @@ export const errorLogLocatioin = path.resolve(
   "../data/batch_error.jsonl",
 );
 
-export async function startBatch(book: { [K in Letter]?: string[] }) {
+export async function startBatch(
+  book: { [K in Letter]?: string[] },
+  model: Modal,
+) {
   const alphabet = getAlphabet();
-  const systemContent = prompt.systemPrompt();
+  const systemContent = systemPrompt();
 
   for (let i = 0; i < alphabet.length; i++) {
     const letter = alphabet[i].toUpperCase() as Letter;
@@ -39,57 +43,33 @@ export async function startBatch(book: { [K in Letter]?: string[] }) {
       continue;
     }
 
-    const jsonlContent = list.map(
-      (word, i) =>
-        ({
-          custom_id: `request-${i}`,
-          method: "POST",
-          url: "/v1/chat/completions",
-          body: {
-            model: qwenPlus.name,
-            messages: [
-              { role: "system", content: systemContent },
-              { role: "user", content: prompt.userPrompt(word) },
-            ],
-          },
-        }) satisfies BatchUploadData,
-    );
+    const jsonlContent = list.map((word, i) => ({
+      custom_id: `request-${letter}-${i}-${word.replaceAll(" ", "")}`,
+      method: "POST",
+      url: "/v1/chat/completions",
+      body: {
+        model: model.name,
+        temperature: 0.5,
+        messages: [
+          { role: "system", content: systemContent },
+          { role: "user", content: userPrompt(word) },
+        ],
+        max_tokens: 2048,
+        response_format: {
+          type: "json_object",
+        },
+      },
+    }));
 
+    process.stdout.write(
+      `===============> Progress: ${i + 1}/${alphabet.length} ::Letter[${letter}] has [${list.length}] words in one batch `,
+    );
     await batchTask(jsonlContent, letter);
   }
 }
-export async function batchCheck(batchId: `batch_${string}`) {
-  try {
-    const client = new OpenAI({
-      apiKey: process.env.DASHSCOPE_API_KEY,
-      baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
-    });
-
-    while (true) {
-      const batch = await client.batches.retrieve(batchId);
-      const currentTime = new Date().toISOString();
-      console.log(
-        `[${currentTime}] Logging after 2 minute of sleep, batch status is:`,
-      );
-      console.log(batch);
-
-      await sleep(120_000);
-    }
-  } catch (error) {
-    console.log(`错误信息：${error}`);
-    console.log(
-      "请参考文档：https://help.aliyun.com/zh/model-studio/developer-reference/error-code",
-    );
-    return null;
-  }
-}
-
 export async function batchResultHandle(from?: string) {
   try {
-    const client = new OpenAI({
-      apiKey: process.env.DASHSCOPE_API_KEY,
-      baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
-    });
+    const client = new OpenAI(getOpenAIConfig());
 
     await handleJSONLFile(
       batchLogLocation,
@@ -112,29 +92,24 @@ export async function batchResultHandle(from?: string) {
     );
   } catch (error) {
     console.log(`错误信息：${error}`);
-    console.log(
-      "请参考文档：https://help.aliyun.com/zh/model-studio/developer-reference/error-code",
-    );
     return null;
   }
 }
 
-export async function batchTask(data: BatchUploadData[], flag?: string) {
+export async function batchTask(data: unknown[], flag?: string) {
   const jsonl = data.map((v) => JSON.stringify(v)).join("\n");
   const blob = new Blob([jsonl]);
-  const file = await toFile(blob, "test.jsonl");
+  const file = await toFile(blob, `vocabulary-${flag}.jsonl`);
 
   try {
-    const client = new OpenAI({
-      apiKey: process.env.DASHSCOPE_API_KEY,
-      baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
-    });
+    const client = new OpenAI(getOpenAIConfig());
 
     // 1. upload file
     const fileObj = await client.files.create({
       file,
       purpose: "batch",
     });
+    console.log(`>> fileObj: [${flag}]`, fileObj);
 
     // 2. create batch task
     const batch = await client.batches.create({
@@ -143,8 +118,8 @@ export async function batchTask(data: BatchUploadData[], flag?: string) {
       completion_window: "24h",
     });
 
-    console.log(">> batch: ", batch);
-    appendWithTimestamp(batchLogLocation, JSON.stringify(batch));
+    console.log(`>> batch: [${flag}]`, batch);
+    appendWithTimestamp(batchLogLocation, JSON.stringify(batch), flag);
   } catch (error) {
     console.error("Error during the request: \n", error);
     return null;
@@ -153,31 +128,54 @@ export async function batchTask(data: BatchUploadData[], flag?: string) {
 
 export async function fileCheck(fileId: `file-${string}`) {
   try {
-    const client = new OpenAI({
-      apiKey: process.env.DASHSCOPE_API_KEY,
-      baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
-    });
+    const client = new OpenAI(getOpenAIConfig());
     const res = await client.files.content(fileId);
     console.log(res);
     return res;
   } catch (error) {
     console.log(`错误信息：${error}`);
-    console.log(
-      "请参考文档：https://help.aliyun.com/zh/model-studio/developer-reference/error-code",
-    );
     return null;
   }
 }
 
-export type BatchUploadData = {
-  custom_id: `request-${string}`;
-  method: "POST";
-  url: "/v1/chat/completions";
-  body: {
-    model: string;
-    messages: [
-      { role: "system"; content: string },
-      { role: "user"; content: string },
-    ];
+export async function batchCheck(batchId: `batch_${string}`) {
+  try {
+    const client = new OpenAI(getOpenAIConfig());
+
+    while (true) {
+      const batch = await client.batches.retrieve(batchId);
+      const currentTime = new Date().toISOString();
+      console.log(
+        `[${currentTime}] Logging after 2 minute of sleep, batch status is:`,
+      );
+      console.log(batch);
+
+      await sleep(120_000);
+    }
+  } catch (error) {
+    console.log(`错误信息：${error}`);
+    return null;
+  }
+}
+
+export function getOpenAIConfig() {
+  const isOpenAI = !!process.env.OPENAI_API_KEY;
+  const apiKey = isOpenAI
+    ? process.env.OPENAI_API_KEY
+    : process.env.DASHSCOPE_API_KEY;
+  const httpAgent = isOpenAI
+    ? new HttpsProxyAgent("http:localhost:7890")
+    : undefined;
+
+  if (!apiKey) {
+    throw new Error("Please provide any of the API KEY!!!");
+  }
+  const baseURL = isOpenAI
+    ? "https://api.openai.com/v1"
+    : "https://dashscope.aliyuncs.com/compatible-mode/v1";
+  return {
+    apiKey,
+    baseURL,
+    httpAgent,
   };
-};
+}

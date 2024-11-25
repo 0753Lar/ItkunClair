@@ -71,40 +71,131 @@ export type FormalWord = {
   mnemonics: string;
 };
 
-const systemPrompt = () =>
+export const systemPrompt = () =>
   `假设你是一名中英文双语教育专家，拥有帮助将中文视为母语的用户理解和记忆英语单词的专长。`;
 
-const userPrompt = (word: string) => `
-给定单词[${word}]，帮忙生成包含以下数据的json数据，要求去除多余话术，返回纯粹并且可以直接使用的json数据。
+export const userPrompt = (word: string) => `
+根据以下数据结构和内容，生成单词[${word}]的对应json数据，至少包含3个例句作为examples，只返回json. 
 
-### 单词释义
-
-### 单词音标
-
-- 包含美式发音和英式发音
-
-### 列举例句
-
-- 根据所需，为该单词提供至少3个不同场景下的使用方法和例句。并且附上中文翻译，以帮助用户更深入地理解单词意义。
-
-### 词根分析
-
-- 分析并展示单词的词根；
-- 列出由词根衍生出来的其他单词；
-
-### 单词搭配
-
-- 列出单词对应的常见固定搭配、组词以及对应的中文翻译。
-
-### 记忆辅助
-
-- 提供一些高效的记忆技巧和窍门，以更好地记住英文单词。
-
-参考和使用以下单词结构：
-${JSON.stringify(wordTemplate, null, 2)}
+${"```json\n" + JSON.stringify(wordTemplate, null, 2) + "\n```"}
 `;
 
-export default {
-  systemPrompt,
-  userPrompt,
-};
+export const wordJsonSchema = `{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "word": {
+      "type": "string",
+      "description": "The word being defined."
+    },
+    "meaning": {
+      "type": "object",
+      "description": "A mapping of parts of speech to their meanings.",
+      "additionalProperties": {
+        "type": "string",
+        "description": "The meaning of the word for a given part of speech."
+      }
+    },
+    "phonetics": {
+      "type": "object",
+      "description": "Phonetic transcriptions of the word.",
+      "properties": {
+        "us": {
+          "type": "string",
+          "description": "Phonetic transcription in American English."
+        },
+        "uk": {
+          "type": "string",
+          "description": "Phonetic transcription in British English."
+        }
+      },
+      "required": ["us", "uk"]
+    },
+    "examples": {
+      "type": "array",
+      "description": "Examples of the word used in different contexts.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "string",
+            "description": "The context in which the example is used."
+          },
+          "sentence": {
+            "type": "string",
+            "description": "An example sentence."
+          },
+          "translation": {
+            "type": "string",
+            "description": "The translation of the example sentence."
+          }
+        },
+        "required": ["context", "sentence", "translation"]
+      }
+    },
+    "root_analysis": {
+      "type": "object",
+      "description": "Analysis of the word's root and derived words.",
+      "properties": {
+        "root": {
+          "type": "string",
+          "description": "The root of the word."
+        },
+        "meaning": {
+          "type": "string",
+          "description": "The meaning of the root."
+        },
+        "derived_words": {
+          "type": "array",
+          "description": "Words derived from the root.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "word": {
+                "type": "string",
+                "description": "A derived word."
+              },
+              "meaning": {
+                "type": "string",
+                "description": "The meaning of the derived word."
+              }
+            },
+            "required": ["word", "meaning"]
+          }
+        }
+      },
+      "required": ["root", "meaning", "derived_words"]
+    },
+    "collocations": {
+      "type": "array",
+      "description": "Common phrases or expressions that use the word.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phrase": {
+            "type": "string",
+            "description": "A collocation or phrase."
+          },
+          "translation": {
+            "type": "string",
+            "description": "The translation of the collocation."
+          }
+        },
+        "required": ["phrase", "translation"]
+      }
+    },
+    "mnemonics": {
+      "type": "string",
+      "description": "A mnemonic to help remember the word."
+    }
+  },
+  "required": [
+    "word",
+    "meaning",
+    "phonetics",
+    "examples",
+    "root_analysis",
+    "collocations",
+    "mnemonics"
+  ]
+}`

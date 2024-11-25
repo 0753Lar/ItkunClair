@@ -1,4 +1,5 @@
-import fs from "fs";
+import fs, { createReadStream } from "fs";
+import path from "path";
 import readline from "readline";
 
 export type Letter = Uppercase<ReturnType<typeof getAlphabet>[number]>;
@@ -77,5 +78,62 @@ export async function handleJSONLFile(
   }
   if (!start) {
     console.error("cannot find the line start with: ", from);
+  }
+}
+
+export function parseJsonString(str: string) {
+  try {
+    const match = str.match(/```json\n([\s\S]*?)\n```/);
+    if (match?.[1]) {
+      return JSON.parse(match[1]);
+    } else {
+      console.error(">> match error,", "\n", str);
+      return null;
+    }
+  } catch (error) {
+    console.error(">> parsing content error,", error, "\n", str);
+    return null;
+  }
+}
+
+export function pick(book: { [K in Letter]?: string[] }, ...letter: Letter[]) {
+  return Object.assign({}, ...letter.map((v) => ({ [v]: book[v] })));
+}
+
+export async function rawToJSON(inputPath: string) {
+  const rs = createReadStream(inputPath);
+
+  const rl = readline.createInterface({
+    input: rs,
+    crlfDelay: Infinity, // Recognize all instances of CR LF (\r\n) as line breaks
+  });
+
+  const record: Record<string, string[]> = {};
+
+  for await (const line of rl) {
+    const trimedLine = line.trim();
+    const letter = trimedLine[0].toUpperCase();
+    if (!record[letter]) {
+      record[letter] = [trimedLine];
+    } else if (record[letter].includes(trimedLine)) {
+      continue;
+    } else {
+      record[letter].push(trimedLine);
+    }
+  }
+
+  return record;
+}
+
+export function ensureWriteFileSync(location: string, data: string) {
+  const dir = path.dirname(location);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
+  if (!fs.existsSync(location)) {
+    fs.writeFileSync(location, data, "utf8");
+  } else {
+    fs.appendFileSync(location, data, "utf8");
   }
 }

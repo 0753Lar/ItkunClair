@@ -29,6 +29,7 @@
     "dotenv": "^16.4.5",
     "eslint": "^8.57.1",
     "eslint-config-next": "15.0.2",
+    "https-proxy-agent": "^7.0.5",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
     "postcss": "^8",
@@ -43,6 +44,7 @@
     "**/*.{js,jsx,ts,tsx}": "eslint --fix"
   },
   "author": {
+    "name": "0753",
     "email": "limequery@163.com",
     "url": "https://github.com/0753Lar/ItkunClair"
   }
