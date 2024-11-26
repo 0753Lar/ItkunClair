@@ -2,9 +2,9 @@ name: Daily AI Task
 
 on:
   schedule:
-    - cron: "0 3 * * *"
-    - cron: "0 4 * * *"
-    - cron: "0 5 * * *"
+    - cron: "0 19 * * *"
+    - cron: "0 20 * * *"
+    - cron: "0 21 * * *"
   push:
     branches:
       - chore/timer
@@ -43,10 +43,10 @@ jobs:
 
       - name: Create New Branch
         run: |
-          git config user.name "0753Ljuc"
-          git config user.email "limequery@163.com"
+          git config --global user.email "limequery@163.com"
+          git config --global user.name "0753Lar"
           git checkout chore/timer
-          git commit --allow-empty -m "Daily task from chore/timer"
+          git commit --allow-empty -m "chore: Daily task"
 
       - name: Run Task
         env:
@@ -55,12 +55,8 @@ jobs:
           for i in $(seq 1 250); do
             echo "Run #$i"
             npm run ai
-
             git add .
-
-            git commit --amend -m "AI Task Iteration #$i"
-
+            git commit --amend -m "chore: AI Task Iteration #$i"
             git push origin chore/timer --force
-            
             sleep 3
           done
