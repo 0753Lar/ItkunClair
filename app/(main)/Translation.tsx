@@ -9,6 +9,8 @@ import { montserrat, notoSans } from "../fonts";
 import Loading from "@/components/icons/Loading";
 import { FormalWord } from "@/ai/data/template/word";
 import { useRootContext } from "../context/rootContext";
+import Sound from "@/components/icons/Sound";
+import { pronounce } from "@/utils";
 
 const animateDuration = 500;
 
@@ -187,9 +189,19 @@ export default function Translation() {
                 <div className="text-xl">{item.word}</div>
                 <div>
                   {Object.entries(item.phonetics).map((v, i) => (
-                    <div key={`translations-answer-phonetics-${i}`}>
+                    <div
+                      key={`translations-answer-phonetics-${i}`}
+                      className="flex items-center justify-center"
+                    >
                       <span>{v[0]}:&nbsp;</span>
                       <span>{v[1]}</span>
+                      &nbsp;
+                      <span
+                        className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
+                        onClick={() => pronounce(item.word, v[0])}
+                      >
+                        <Sound />
+                      </span>
                     </div>
                   ))}
                 </div>
