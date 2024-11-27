@@ -5,12 +5,12 @@ interface Option {
   value?: string;
 }
 
-interface CascaderProps {
+interface OptionProps {
   options: Option[];
   selectedLabel?: string;
   onSelect?: (val: string) => void;
 }
-const Cascader = ({ options, onSelect, selectedLabel }: CascaderProps) => {
+const Option = ({ options, onSelect, selectedLabel }: OptionProps) => {
   const [label, setLabel] = useState(selectedLabel || "Select Option");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -53,4 +53,4 @@ const Cascader = ({ options, onSelect, selectedLabel }: CascaderProps) => {
   );
 };
 
-export default Cascader;
+export default Option;

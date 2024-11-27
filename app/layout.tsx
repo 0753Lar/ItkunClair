@@ -6,6 +6,7 @@ import { RootProvider } from "./context/rootContext";
 export const metadata: Metadata = {
   title: "ItkunClair",
   description: "All free website for training your English",
+  referrer: "no-referrer",
 };
 
 if (!process.env.MONGODB_URI) {

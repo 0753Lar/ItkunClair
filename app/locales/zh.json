@@ -8,5 +8,10 @@
   "home_translation_examples_empty_error": "抱歉，暂时没有例句展示！",
   "home_translation_congratulation_title": "Congratulations!",
   "home_translation_enter_title": "输入单词",
-  "home_translation_show_answer_title": "查看答案"
+  "home_translation_show_answer_title": "查看答案",
+  "home_pronounciation_title": "发音",
+  "config_pronounciation_show_title": "展示发音",
+  "config_pronounciation_auto_title": "自动发音",
+  "config_translation_meaning_title": "展示中文释义",
+  "config_translation_example_title": "展示例句"
 }

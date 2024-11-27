@@ -10,7 +10,7 @@ import Loading from "@/components/icons/Loading";
 import { FormalWord } from "@/ai/data/template/word";
 import { useRootContext } from "../context/rootContext";
 import Sound from "@/components/icons/Sound";
-import { pronounce } from "@/utils";
+import { pronounce, useSound } from "@/utils";
 
 const animateDuration = 500;
 
@@ -27,6 +27,8 @@ export default function Translation() {
   const [value, setValue] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const inputRef = createRef<HTMLInputElement>();
+
+  useSound();
 
   const requestList = () => {
     setLoading(true);
@@ -118,6 +120,12 @@ export default function Translation() {
           }`}
         >
           <div className={`card flex flex-col gap-4 md:w-full`}>
+            {config.pronounciation.show && (
+              <div>
+                <Pronounciation word={item.word} />
+              </div>
+            )}
+
             {config.translation.showMeaning && (
               <div>
                 <Meaning meaning={item.meaning} />
@@ -210,6 +218,32 @@ export default function Translation() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function Pronounciation({ word }: { word: string }) {
+  const { config } = useRootContext();
+  const t = useLocale();
+
+  useEffect(() => {
+    if (config.pronounciation.auto) {
+      setTimeout(() => pronounce(word), animateDuration);
+    }
+  }, [word, config.pronounciation.auto]);
+
+  return (
+    <div className="flex items-center">
+      <span className="text-sm text-fuchsia-100">
+        {t("home_pronounciation_title")}{" "}
+      </span>
+      &nbsp;
+      <span
+        className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
+        onClick={() => pronounce(word, config.pronounciation.accent)}
+      >
+        <Sound />
+      </span>
     </div>
   );
 }

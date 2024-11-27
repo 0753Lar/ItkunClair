@@ -8,5 +8,10 @@
   "home_translation_examples_empty_error": "Sorry, currently no examples to show!",
   "home_translation_congratulation_title": "Congratulations!",
   "home_translation_enter_title": "Enter word",
-  "home_translation_show_answer_title": "Check Answer"
+  "home_translation_show_answer_title": "Check Answer",
+  "home_pronounciation_title": "Pronounce",
+  "config_pronounciation_show_title": "Show Pronounciation",
+  "config_pronounciation_auto_title": "Auto Pronounce",
+  "config_translation_meaning_title": "Show Chinese Meaning",
+  "config_translation_example_title": "Show Examples"
 }

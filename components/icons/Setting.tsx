@@ -9,7 +9,7 @@ import {
   translationdefaultMaxCount,
   translationdefaultMinCount,
 } from "@/utils/config";
-import Cascader from "../Cascader";
+import Option from "../Option";
 import Switch from "./Switch";
 import { useRootContext } from "@/app/context/rootContext";
 
@@ -52,7 +52,7 @@ export default function Setting() {
           <div className="flex justify-between">
             <span>{t("home_quiz_vocabulary_title")}:</span>
             <div>
-              <Cascader
+              <Option
                 options={allQuiz.map((v) => ({ label: v }))}
                 selectedLabel={quiz}
                 onSelect={updateQuiz as (val: string) => void}
@@ -62,7 +62,7 @@ export default function Setting() {
           <div className="flex justify-between">
             <span>{t("home_quiz_challenge_title")}:</span>
             <div>
-              <Cascader
+              <Option
                 options={allChallenge.map((v) => ({ label: v }))}
                 selectedLabel={quizType}
                 onSelect={updateQuizType as (val: string) => void}
@@ -78,10 +78,35 @@ export default function Setting() {
               max={translationdefaultMaxCount}
             />
           </div>
+          <div className="flex justify-between">
+            <span>{t("config_pronounciation_show_title")}:</span>
+            <Switch
+              isOn={config.pronounciation.show}
+              onToggle={() =>
+                updateConfig((config) => {
+                  config.pronounciation.show = !config.pronounciation.show;
+                  return config;
+                })
+              }
+            />
+          </div>
+          <div className="flex justify-between">
+            <span>{t("config_pronounciation_auto_title")}:</span>
+            <Switch
+              disabled={!config.pronounciation.show}
+              isOn={config.pronounciation.auto}
+              onToggle={() =>
+                updateConfig((config) => {
+                  config.pronounciation.auto = !config.pronounciation.auto;
+                  return config;
+                })
+              }
+            />
+          </div>
           {quizType === "translation" && (
             <>
               <div className="flex justify-between">
-                <span>展示中文释义:</span>
+                <span>{t("config_translation_meaning_title")}:</span>
                 <Switch
                   isOn={config.translation.showMeaning}
                   onToggle={() =>
@@ -94,7 +119,7 @@ export default function Setting() {
                 />
               </div>
               <div className="flex justify-between">
-                <span>展示示例:</span>
+                <span>{t("config_translation_example_title")}:</span>
                 <Switch
                   isOn={config.translation.showExamples}
                   onToggle={() =>

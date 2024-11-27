@@ -14,6 +14,11 @@ export type Config = {
     showExamples: boolean;
     exampleLimit: number;
   };
+  pronounciation: {
+    show: boolean;
+    auto: boolean;
+    accent: "us" | "uk";
+  };
 };
 export interface rootContextInterface {
   theme: ThemeMode;
@@ -38,6 +43,11 @@ export const RootProvider = ({ children }: PropsWithChildren) => {
       showMeaning: true,
       showExamples: true,
       exampleLimit: 3, // the example count, only 3 currently
+    },
+    pronounciation: {
+      show: false,
+      auto: false,
+      accent: "uk",
     },
   });
 
