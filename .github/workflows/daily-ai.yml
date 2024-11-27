@@ -3,8 +3,6 @@ name: Daily AI Task
 on:
   schedule:
     - cron: "0 19 * * *"
-    - cron: "0 20 * * *"
-    - cron: "0 21 * * *"
   push:
     branches:
       - chore/timer
@@ -53,7 +51,7 @@ jobs:
         env:
           HUGGING_FACE_API_KEY: ${{ secrets.HUGGING_FACE_API_KEY }}
         run: |
-          for i in $(seq 1 250); do
+          for i in $(seq 1 800); do
             echo "Run #$i"
             npm run ai
             git add .

@@ -2,7 +2,7 @@ import fs from "fs";
 
 import readline from "readline";
 import { huggingfaceCall } from "./huggingfaceCall";
-import { userPrompt } from "../data/template/word";
+import { FormalWord, userPrompt } from "../data/template/word";
 import { ensureWriteFileSync } from "@/utils/nodeUtils";
 import path from "path";
 
@@ -11,7 +11,7 @@ export async function getTaskPath() {
 }
 
 export async function batchSync(rawLocation: string) {
-  const copyPath = copyRaw(rawLocation);
+  const copyPath = copyRawIfNotExist(rawLocation);
 
   const isAllFinished = await isFileEmpty(copyPath);
   if (isAllFinished) {
@@ -21,7 +21,7 @@ export async function batchSync(rawLocation: string) {
   }
 }
 
-function copyRaw(rawLocation: string) {
+export function copyRawIfNotExist(rawLocation: string) {
   const copyPath = rawLocation.split(".").join("_copy.");
 
   if (!fs.existsSync(copyPath)) {
@@ -30,7 +30,7 @@ function copyRaw(rawLocation: string) {
   return copyPath;
 }
 
-async function processFile(wipFile: string) {
+export async function processFile(wipFile: string) {
   const tempFilePath = wipFile + ".tmp"; // Temporary file path
   const targetOutputPath = wipFile.split(".").join("_result.");
   const readStream = fs.createReadStream(wipFile);
@@ -56,12 +56,14 @@ async function processFile(wipFile: string) {
         const text = res.data[0].generated_text;
         if (text) {
           try {
-            const obj = JSON.parse(text); // check the result parsable or not
-            ensureWriteFileSync(targetOutputPath, JSON.stringify(obj) + "\n");
-            success = true;
-            process.stdout.write(
-              `>============================> Finished: [${line.trim()}] with ${count} times`,
-            );
+            const obj = JSON.parse(text) as FormalWord; // check the result parsable or not
+            if (obj.word == line.trim()) {
+              ensureWriteFileSync(targetOutputPath, JSON.stringify(obj) + "\n");
+              success = true;
+              process.stdout.write(
+                `>============================> Finished: [${line.trim()}] with ${count} times`,
+              );
+            }
           } catch (error) {
             console.log(">> Parsing error: ", error, "\n");
           }
@@ -78,7 +80,7 @@ async function processFile(wipFile: string) {
   fs.renameSync(tempFilePath, wipFile);
 }
 
-async function isFileEmpty(filePath: string) {
+export async function isFileEmpty(filePath: string) {
   try {
     const fileStream = fs.createReadStream(filePath);
     const rl = readline.createInterface({

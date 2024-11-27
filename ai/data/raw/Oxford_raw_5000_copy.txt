@@ -1,3 +1,5 @@
+index
+mask
 pit
 pity
 placement

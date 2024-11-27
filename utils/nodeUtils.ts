@@ -77,7 +77,7 @@ export async function handleJSONLFile(
     }
   }
   if (!start) {
-    console.error("cannot find the line start with: ", from);
+    throw new Error("cannot find the line start with: " + from);
   }
 }
 

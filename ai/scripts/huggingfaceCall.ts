@@ -71,6 +71,7 @@ export async function huggingfaceCall(userContent: string) {
       stream: false,
     },
     {
+      timeout: 60_000,
       headers: {
         Authorization: `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
         "Content-Type": "application/json",

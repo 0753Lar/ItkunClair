@@ -75,7 +75,7 @@ export const systemPrompt = () =>
   `假设你是一名中英文双语教育专家，拥有帮助将中文视为母语的用户理解和记忆英语单词的专长。`;
 
 export const userPrompt = (word: string) => `
-根据以下数据结构和内容，生成单词[${word}]的对应json数据，至少包含3个例句作为examples，只返回json. 
+根据以下数据结构和内容，生成单词${word}的对应json数据，至少包含3个例句作为examples，只返回json. 
 
 ${"```json\n" + JSON.stringify(wordTemplate, null, 2) + "\n```"}
 `;
