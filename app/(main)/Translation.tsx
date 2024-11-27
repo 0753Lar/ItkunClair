@@ -206,7 +206,7 @@ export default function Translation() {
                       &nbsp;
                       <span
                         className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
-                        onClick={() => pronounce(item.word, v[0])}
+                        onClick={() => pronounce(item.word)}
                       >
                         <Sound />
                       </span>
@@ -240,7 +240,7 @@ function Pronounciation({ word }: { word: string }) {
       &nbsp;
       <span
         className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
-        onClick={() => pronounce(word, config.pronounciation.accent)}
+        onClick={() => pronounce(word)}
       >
         <Sound />
       </span>
