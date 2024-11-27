@@ -14,7 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ref: chore/timer
 
       - name: Skip if AI Task Branch
         if: github.ref == 'refs/heads/chore/timer'
@@ -41,11 +43,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Create New Branch
+      - name: Empty Commit 
         run: |
-          git config --global user.email "limequery@163.com"
-          git config --global user.name "0753Lar"
-          git checkout chore/timer
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git commit --allow-empty -m "chore: Daily task"
 
       - name: Run Task
