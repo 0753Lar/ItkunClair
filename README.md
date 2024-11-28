@@ -62,6 +62,6 @@ The application should now be running at [http://localhost:3000](http://localhos
 - [ ] &nbsp;Integrate AI to come up with the training suggestion. </br> 
 
 
-### [Contributors](https://github.com/type-challenges/type-challenges/graphs/contributors)
+### [Contributors](https://github.com/0753Lar/ItkunClair/graphs/contributors)
 
 ![Contributors](https://contrib.rocks/image?repo=0753Lar/ItkunClair)
