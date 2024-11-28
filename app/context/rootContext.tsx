@@ -69,7 +69,7 @@ export const RootProvider = ({ children }: PropsWithChildren) => {
     >
       <html className={theme} lang={language}>
         <body
-          className={`relative h-[100vh] antialiased ${montserrat.className}`}
+          className={`relative min-h-screen antialiased ${montserrat.className}`}
         >
           {children}
           <div id="portal" />
