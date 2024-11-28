@@ -1,17 +1,14 @@
-export function pronounce(text: string, accent?: "us" | "uk") {
+export async function pronounce(text: string, accent?: "us" | "uk") {
   if (isSpeechSynthesisSupported()) {
     try {
-      if (!speechSynthesis.onvoiceschanged) {
-        speechSynthesis.onvoiceschanged = () => {
-          const voices = speechSynthesis.getVoices();
-          const accents = voices.filter((v) =>
-            accent === "us" ? v.lang === "en-US" : v.lang === "en-GB",
-          );
-          utterance.voice = accents[2];
-        };
-      }
+      const voices = await getVoices();
+      const accents = voices.filter((v) =>
+        accent === "us" ? v.lang === "en-US" : v.lang === "en-GB",
+      );
       const utterance = new SpeechSynthesisUtterance(text);
-
+      utterance.voice = accents[1];
+      utterance.pitch = 0.8;
+      utterance.rate = 0.8;
       speechSynthesis.speak(utterance);
 
       utterance.onerror = (e) => {
@@ -37,4 +34,19 @@ function fallbackSpeak(text: string) {
     `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${text.replaceAll(" ", "+")}`,
   );
   audio.play();
+}
+
+async function getVoices(): Promise<SpeechSynthesisVoice[]> {
+  return new Promise((resolve) => {
+    const voices = window.speechSynthesis.getVoices();
+
+    if (voices.length !== 0) {
+      resolve(voices);
+    } else {
+      window.speechSynthesis.onvoiceschanged = function () {
+        const voices = window.speechSynthesis.getVoices();
+        resolve(voices);
+      };
+    }
+  });
 }
