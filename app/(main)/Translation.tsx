@@ -10,7 +10,7 @@ import Loading from "@/components/icons/Loading";
 import { FormalWord } from "@/ai/data/template/word";
 import { useRootContext } from "../context/rootContext";
 import Sound from "@/components/icons/Sound";
-import { pronounce, useSound } from "@/utils";
+import { pronounce } from "@/utils";
 
 const animateDuration = 500;
 
@@ -27,8 +27,6 @@ export default function Translation() {
   const [value, setValue] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const inputRef = createRef<HTMLInputElement>();
-
-  useSound();
 
   const requestList = () => {
     setLoading(true);
@@ -90,10 +88,8 @@ export default function Translation() {
   }, [inputRef, isSuccess, status]);
 
   if (quizcount === 0 || !item) {
-    return null;
+    return <LoadingSection />;
   }
-
-  console.log(">> quizList: \n", quizList);
 
   return (
     <div className={`flex flex-col gap-2 ${montserrat.className}`}>
@@ -106,9 +102,7 @@ export default function Translation() {
         )}
       </div>
       {loading ? (
-        <div className="flex h-32 w-full items-center justify-center">
-          <Loading className="fill-slate-200 text-transparent" />
-        </div>
+        <LoadingSection />
       ) : isTranslationFinished ? (
         <Congratulation onClick={requestList} />
       ) : (
@@ -196,28 +190,30 @@ export default function Translation() {
               <div>
                 <div className="text-xl">{item.word}</div>
                 <div>
-                  {Object.entries(item.phonetics).map((v, i) => (
-                    <div
-                      key={`translations-answer-phonetics-${i}`}
-                      className="flex items-center justify-center"
+                  <div className="flex items-center justify-center">
+                    <span>{item.phonetics.uk}</span>
+                    &nbsp;
+                    <span
+                      className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
+                      onClick={() => pronounce(item.word)}
                     >
-                      <span>{v[0]}:&nbsp;</span>
-                      <span>{v[1]}</span>
-                      &nbsp;
-                      <span
-                        className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
-                        onClick={() => pronounce(item.word)}
-                      >
-                        <Sound />
-                      </span>
-                    </div>
-                  ))}
+                      <Sound />
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function LoadingSection() {
+  return (
+    <div className="flex h-32 w-full items-center justify-center">
+      <Loading className="fill-slate-200 text-transparent" />
     </div>
   );
 }
