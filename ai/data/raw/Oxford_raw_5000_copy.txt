@@ -1,4 +1,3 @@
-index
 mask
 pit
 pity

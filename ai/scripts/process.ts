@@ -20,10 +20,6 @@ export function getJSONOutputPath() {
 }
 
 export async function workWithUnitOfTask() {
-  if (HFAttempt >= 10) {
-    console.log("-------------------REACH MAX ATTEMPT---------------");
-    return;
-  }
   const taskPath = await getTaskPath();
 
   const { getLines, validNext, close } = createRl(taskPath);
@@ -59,6 +55,10 @@ async function processUnitOfFile(filePath: string) {
   let count = 0;
   let success = false;
   while (!success) {
+    if (HFAttempt >= 10) {
+      console.log("-------------------REACH MAX ATTEMPT---------------");
+      return;
+    }
     count++;
     const content = userPrompt(nextLine.trim());
     try {
