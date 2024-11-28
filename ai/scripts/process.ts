@@ -8,6 +8,16 @@ import { huggingfaceCall } from "./huggingfaceCall";
 import { copyRawIfNotExist, getTaskPath, isFileEmpty } from "./batchSync";
 
 let HFAttempt = 0;
+let targetRaw: string | null = null;
+export function getJSONOutputPath() {
+  const outputPath = targetRaw
+    ? path.resolve(__dirname, "../data/", targetRaw.split(".")[0] + ".json")
+    : path.resolve(__dirname, "../data/data.json");
+  if (!fs.existsSync(outputPath)) {
+    fs.writeFileSync(outputPath, JSON.stringify({}), "utf-8");
+  }
+  return outputPath;
+}
 
 export async function workWithUnitOfTask() {
   if (HFAttempt >= 10) {
@@ -22,7 +32,7 @@ export async function workWithUnitOfTask() {
   if (!line) {
     return;
   }
-  const targetRaw = path.resolve(__dirname, "../data/raw/", line);
+  targetRaw = path.resolve(__dirname, "../data/raw/", line);
   const copyRawPath = copyRawIfNotExist(targetRaw);
   const isAllFinished = await isFileEmpty(copyRawPath);
   if (isAllFinished) {
@@ -36,48 +46,43 @@ export async function workWithUnitOfTask() {
     await processUnitOfFile(copyRawPath);
   }
 }
+
 async function processUnitOfFile(filePath: string) {
   const targetOutputPath = filePath.split(".").join("_result.");
-  const { getLines, rl } = createRl(filePath);
+  const { getLines, rl, validNext } = createRl(filePath);
+
+  const nextLine = await validNext();
+  if (!nextLine) {
+    return await workWithUnitOfTask();
+  }
+
   let count = 0;
-  let lineRemoved = false;
-  for await (const line of rl) {
-    if (!line.trim()) {
-      continue;
-    }
-    if (!lineRemoved) {
-      console.log(`>============================> In progress word: [${line}]`);
-      let success = false;
-      while (!success) {
-        count++;
-        const content = userPrompt(line.trim());
+  let success = false;
+  while (!success) {
+    count++;
+    const content = userPrompt(nextLine.trim());
+    try {
+      const res = await huggingfaceCall(content);
+      const text = res.data[0].generated_text;
+      if (text) {
         try {
-          const res = await huggingfaceCall(content);
-          const text = res.data[0].generated_text;
-          if (text) {
-            try {
-              const obj = JSON.parse(text) as FormalWord; // check the result parsable or not
-              if (obj.word == line.trim()) {
-                ensureWriteFileSync(
-                  targetOutputPath,
-                  JSON.stringify(obj) + "\n",
-                );
-                success = true;
-                process.stdout.write(
-                  `>============================> Finished: [${line.trim()}] with ${count} times`,
-                );
-              }
-            } catch (error) {
-              console.log(">> Parsing error: ", error, "\n");
-            }
+          const obj = JSON.parse(text) as FormalWord; // check the result parsable or not
+          if (obj.word == nextLine.trim()) {
+            appendWordIntoJSON(getJSONOutputPath(), obj);
+            ensureWriteFileSync(targetOutputPath, JSON.stringify(obj) + "\n");
+            success = true;
+            process.stdout.write(
+              `>============================> Finished: [${nextLine}] with ${count} times`,
+            );
           }
         } catch (error) {
-          console.log(">> hugging face error: ", error, "\n");
-          HFAttempt++;
-          await sleep(100_000);
+          console.log(">> Parsing error: ", error, "\n");
         }
       }
-      lineRemoved = true;
+    } catch (error) {
+      console.log(">> hugging face error: ", error, "\n");
+      HFAttempt++;
+      await sleep(100_000);
     }
   }
 
@@ -99,12 +104,7 @@ function removeLinesOrderly(filePath: string, num: number) {
   }
 }
 
-const sourcePath = path.resolve(__dirname, "../data/data.json");
-if (!fs.existsSync(sourcePath)) {
-  fs.writeFileSync(sourcePath, JSON.stringify({}), "utf-8");
-}
-
-export async function appendWordIntoJSON(jsonpath: string, item: FormalWord) {
+async function appendWordIntoJSON(jsonpath: string, item: FormalWord) {
   const datasource = JSON.parse(fs.readFileSync(jsonpath, "utf-8"));
   const letter = item.word[0].toUpperCase();
 
@@ -146,51 +146,6 @@ function createRl(filePath: string) {
     validNext,
     close: () => rl.close(),
   };
-}
-
-export async function readlineFromRawResult(
-  rawPath: string,
-  rawResultPath: string,
-) {
-  const rawFileStream = fs.createReadStream(rawPath);
-  const rawResultFileStream = fs.createReadStream(rawResultPath);
-
-  const rawRl = readline.createInterface({
-    input: rawFileStream,
-    crlfDelay: Infinity,
-  });
-
-  const rawResultRl = readline.createInterface({
-    input: rawResultFileStream,
-    crlfDelay: Infinity,
-  });
-
-  const rawIterator = rawRl[Symbol.asyncIterator]();
-  const rawResultIterator = rawResultRl[Symbol.asyncIterator]();
-
-  while (true) {
-    const [rawLine, rawResultLine] = await Promise.all([
-      rawIterator.next(),
-      rawResultIterator.next(),
-    ]);
-
-    if (rawLine.done || rawResultLine.done) {
-      break;
-    }
-
-    const obj: FormalWord = JSON.parse(rawResultLine.value.trim());
-
-    // const { us, uk } = await phoneticsCall(obj.word);
-    // if (us) {
-    //   obj.phonetics.us = us;
-    // }
-    // if (uk) {
-    //   obj.phonetics.uk = uk;
-    // }
-    appendWordIntoJSON(sourcePath, obj);
-  }
-  rawRl.close();
-  rawResultRl.close();
 }
 
 type DictionaryapiResponse = {
