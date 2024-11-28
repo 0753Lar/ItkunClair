@@ -62,4 +62,3 @@ The application should now be running at [http://localhost:3000](http://localhos
 - [x] &nbsp;Add Pronunciation ability </br>
 - [ ] &nbsp;Each word shown in the screen should be clickable for checking the meaning</br>
 - [ ] &nbsp;Integrate AI to come up with the training suggestion</br>
-- [ ] &nbsp;Migrate to tauri to build cross platform</br>

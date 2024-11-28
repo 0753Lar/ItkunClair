@@ -45,7 +45,13 @@ async function getVoices(): Promise<SpeechSynthesisVoice[]> {
     } else {
       window.speechSynthesis.onvoiceschanged = function () {
         const voices = window.speechSynthesis.getVoices();
-        resolve(voices);
+        if (!voices.length) {
+          setTimeout(() => {
+            getVoices().then(resolve)
+          }, 300);
+        } else {
+          resolve(voices);
+        }
       };
     }
   });
