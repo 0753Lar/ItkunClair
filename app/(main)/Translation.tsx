@@ -308,7 +308,7 @@ function Example({
             <div className="flex" key={`translations-example-${i}`}>
               <span className={`text-sm leading-tight`}>{i + 1}.</span>
               <div>
-                <div className={`mb-2 flex flex-wrap ${notoSans.className}`}>
+                <div className={`mb-2 flex flex-col ${notoSans.className}`}>
                   <div className="text-sm leading-tight text-white">
                     <span>{v[0]}</span>
                     <span className="relative">
