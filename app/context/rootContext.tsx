@@ -12,10 +12,10 @@ export type Config = {
   translation: {
     showMeaning: boolean;
     showExamples: boolean;
+    showExamplesInterpretation: boolean;
     exampleLimit: number;
   };
   pronounciation: {
-    show: boolean;
     auto: boolean;
     accent: "us" | "uk";
   };
@@ -42,10 +42,10 @@ export const RootProvider = ({ children }: PropsWithChildren) => {
     translation: {
       showMeaning: true,
       showExamples: true,
+      showExamplesInterpretation: false,
       exampleLimit: 3, // the example count, only 3 currently
     },
     pronounciation: {
-      show: false,
       auto: false,
       accent: "uk",
     },

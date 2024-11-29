@@ -13,5 +13,6 @@
   "config_pronounciation_show_title": "展示发音",
   "config_pronounciation_auto_title": "自动发音",
   "config_translation_meaning_title": "展示中文释义",
-  "config_translation_example_title": "展示例句"
+  "config_translation_example_title": "展示例句",
+  "config_translation_example_interpretation_title": "展示例句释义"
 }

@@ -114,11 +114,9 @@ export default function Translation() {
           }`}
         >
           <div className={`card flex flex-col gap-4 md:w-full`}>
-            {config.pronounciation.show && (
-              <div>
-                <Pronounciation word={item.word} />
-              </div>
-            )}
+            <div>
+              <Pronounciation word={item.word} />
+            </div>
 
             {config.translation.showMeaning && (
               <div>
@@ -289,6 +287,7 @@ function Example({
   value,
 }: Pick<FormalWord, "examples" | "word"> & { value: string }) {
   const t = useLocale();
+  const { config } = useRootContext();
 
   const listTobeShow = examples
     .map((v) => splitWordFromSentence(word, value, v.sentence))
@@ -306,22 +305,33 @@ function Example({
       ) : (
         <div>
           {listTobeShow.map((v, i) => (
-            <div
-              key={`translations-example-${i}`}
-              className={`mb-2 flex ${notoSans.className}`}
-            >
+            <div className="flex" key={`translations-example-${i}`}>
               <span className={`text-sm leading-tight`}>{i + 1}.</span>
-              <div className="text-sm leading-tight text-white">
-                <span>{v[0]}</span>
-                <span className="relative">
-                  <span className="border-b-[1px] border-emerald-200 text-transparent">
-                    {v[1]}
-                  </span>
-                  <span className="absolute inset-0">
-                    {value.slice(0, word.length)}
-                  </span>
-                </span>
-                <span className="leading-tight">{v[2]}</span>
+              <div>
+                <div className={`mb-2 flex flex-wrap ${notoSans.className}`}>
+                  <div className="text-sm leading-tight text-white">
+                    <span>{v[0]}</span>
+                    <span className="relative">
+                      <span className="border-b-[1px] border-emerald-200 text-transparent">
+                        {v[1]}
+                      </span>
+                      <span className="absolute inset-0">
+                        {value.slice(0, word.length)}
+                      </span>
+                    </span>
+                    <span className="leading-tight">{v[2]}</span>
+                    &nbsp;
+                    <span
+                      className="inline-block h-4 translate-y-0.5 md:hover:cursor-pointer md:hover:text-slate-300"
+                      onClick={() => pronounce(v[0] + word + v[2])}
+                    >
+                      <Sound />
+                    </span>
+                  </div>
+                  {config.translation.showExamplesInterpretation && (
+                    <div>{examples[i].translation}</div>
+                  )}
+                </div>
               </div>
             </div>
           ))}

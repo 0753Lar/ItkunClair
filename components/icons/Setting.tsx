@@ -79,21 +79,8 @@ export default function Setting() {
             />
           </div>
           <div className="flex justify-between">
-            <span>{t("config_pronounciation_show_title")}:</span>
-            <Switch
-              isOn={config.pronounciation.show}
-              onToggle={() =>
-                updateConfig((config) => {
-                  config.pronounciation.show = !config.pronounciation.show;
-                  return config;
-                })
-              }
-            />
-          </div>
-          <div className="flex justify-between">
             <span>{t("config_pronounciation_auto_title")}:</span>
             <Switch
-              disabled={!config.pronounciation.show}
               isOn={config.pronounciation.auto}
               onToggle={() =>
                 updateConfig((config) => {
@@ -126,6 +113,19 @@ export default function Setting() {
                     updateConfig((config) => {
                       config.translation.showExamples =
                         !config.translation.showExamples;
+                      return config;
+                    })
+                  }
+                />
+              </div>
+              <div className="flex justify-between">
+                <span>{t("config_translation_example_interpretation_title")}:</span>
+                <Switch
+                  isOn={config.translation.showExamplesInterpretation}
+                  onToggle={() =>
+                    updateConfig((config) => {
+                      config.translation.showExamplesInterpretation =
+                        !config.translation.showExamplesInterpretation;
                       return config;
                     })
                   }

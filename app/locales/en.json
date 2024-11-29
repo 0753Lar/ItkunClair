@@ -13,5 +13,6 @@
   "config_pronounciation_show_title": "Show Pronounciation",
   "config_pronounciation_auto_title": "Auto Pronounce",
   "config_translation_meaning_title": "Show Chinese Meaning",
-  "config_translation_example_title": "Show Examples"
+  "config_translation_example_title": "Show Examples",
+  "config_translation_example_interpretation_title": "Show Examples Interpretation"
 }
