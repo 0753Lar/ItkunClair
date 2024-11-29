@@ -40,6 +40,7 @@ export async function workWithUnitOfTask() {
     return await workWithUnitOfTask();
   } else {
     await processUnitOfFile(copyRawPath);
+    await workWithUnitOfTask();
   }
 }
 
@@ -72,7 +73,7 @@ async function processUnitOfFile(filePath: string) {
             ensureWriteFileSync(targetOutputPath, JSON.stringify(obj) + "\n");
             success = true;
             process.stdout.write(
-              `>============================> Finished: [${nextLine}] with ${count} times`,
+              `>============================> Finished: [${nextLine}] with ${count} times\n`,
             );
           }
         } catch (error) {
