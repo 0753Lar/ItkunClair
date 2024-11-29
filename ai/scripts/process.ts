@@ -11,7 +11,7 @@ let HFAttempt = 0;
 let targetRaw: string | null = null;
 export function getJSONOutputPath() {
   const outputPath = targetRaw
-    ? path.resolve(__dirname, "../data/", targetRaw.split(".")[0] + ".json")
+    ? targetRaw.split(".")[0] + ".json"
     : path.resolve(__dirname, "../data/data.json");
   if (!fs.existsSync(outputPath)) {
     fs.writeFileSync(outputPath, JSON.stringify({}), "utf-8");
@@ -40,6 +40,7 @@ export async function workWithUnitOfTask() {
     return await workWithUnitOfTask();
   } else {
     await processUnitOfFile(copyRawPath);
+    await workWithUnitOfTask();
   }
 }
 
@@ -72,7 +73,7 @@ async function processUnitOfFile(filePath: string) {
             ensureWriteFileSync(targetOutputPath, JSON.stringify(obj) + "\n");
             success = true;
             process.stdout.write(
-              `>============================> Finished: [${nextLine}] with ${count} times`,
+              `>============================> Finished: [${nextLine}] with ${count} times\n`,
             );
           }
         } catch (error) {
