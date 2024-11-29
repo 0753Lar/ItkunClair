@@ -11,6 +11,8 @@ import { FormalWord } from "@/ai/data/template/word";
 import { useRootContext } from "../context/rootContext";
 import Sound from "@/components/icons/Sound";
 import { pronounce } from "@/utils";
+import ToLeft from "@/components/icons/ToLeft";
+import ToRight from "@/components/icons/ToRight";
 
 const animateDuration = 500;
 
@@ -27,6 +29,7 @@ export default function Translation() {
   const [value, setValue] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const inputRef = createRef<HTMLInputElement>();
+  const [finishedRound, setFinishedRound] = useState(false);
 
   const requestList = () => {
     setLoading(true);
@@ -63,7 +66,6 @@ export default function Translation() {
 
   const isSuccess = status === "success";
   const isError = status === "error";
-  const isTranslationFinished = current + 1 >= quizcount;
   const item = quizList[current];
 
   useEffect(() => {
@@ -81,7 +83,14 @@ export default function Translation() {
         if (isSuccess) {
           setValue("");
           setShowAnswer(false);
-          setCurrent((pre) => pre + 1);
+          setCurrent((pre) => {
+            if (pre === quizcount - 1) {
+              setFinishedRound(true);
+              return pre;
+            } else {
+              return pre + 1;
+            }
+          });
         }
       }, animateDuration);
     }
@@ -95,16 +104,41 @@ export default function Translation() {
     <div className={`flex flex-col gap-2 ${montserrat.className}`}>
       <div className="flex items-baseline justify-between md:text-lg">
         <span>{t("home_quiz_type_translation")}</span>
-        {!isTranslationFinished && (
-          <span className="text-sm md:text-base">
-            {current + 1}/{quizcount}
-          </span>
+        {!finishedRound && (
+          <div className="flex items-center">
+            <span
+              className="h-4 md:hover:cursor-pointer md:hover:text-slate-200/80"
+              onClick={() => setCurrent((val) => Math.max(0, val - 1))}
+            >
+              <ToLeft />
+            </span>
+            <span className="text-sm md:text-base">
+              {current + 1}/{quizcount}
+            </span>
+            <span
+              className="h-4 md:hover:cursor-pointer md:hover:text-slate-200/80"
+              onClick={() =>
+                setCurrent((val) => Math.min(quizcount - 1, val + 1))
+              }
+            >
+              <ToRight />
+            </span>
+          </div>
         )}
       </div>
       {loading ? (
         <LoadingSection />
-      ) : isTranslationFinished ? (
-        <Congratulation onClick={requestList} />
+      ) : finishedRound ? (
+        <Congratulation
+          onNext={() => {
+            setFinishedRound(false);
+            requestList();
+          }}
+          onRetry={() => {
+            setFinishedRound(false);
+            setCurrent(0);
+          }}
+        />
       ) : (
         <div
           className={`animate__animated flex flex-col gap-4 md:w-full ${
@@ -185,25 +219,42 @@ export default function Translation() {
             </button>
 
             {showAnswer && (
-              <div>
-                <div className="text-xl">{item.word}</div>
-                <div>
-                  <div className="flex items-center justify-center">
-                    <span>{item.phonetics.uk}</span>
-                    &nbsp;
-                    <span
-                      className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
-                      onClick={() => pronounce(item.word)}
-                    >
-                      <Sound />
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <Answer
+                word={item.word}
+                meaning={item.meaning}
+                phonetics={item.phonetics}
+              />
             )}
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function Answer({
+  word,
+  meaning,
+  phonetics,
+}: Pick<FormalWord, "word" | "meaning" | "phonetics">) {
+  return (
+    <div>
+      <div className="text-xl">{word}</div>
+      <div>
+        <div className="flex items-center justify-center">
+          <span>{phonetics.uk}</span>
+          &nbsp;
+          <span
+            className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
+            onClick={() => pronounce(word)}
+          >
+            <Sound />
+          </span>
+        </div>
+      </div>
+      <div>
+        <Meaning meaning={meaning} hideTitle />
+      </div>
     </div>
   );
 }
@@ -242,34 +293,54 @@ function Pronounciation({ word }: { word: string }) {
   );
 }
 
-function Congratulation({ onClick }: { onClick?: () => void }) {
+function Congratulation({
+  onNext,
+  onRetry,
+}: {
+  onNext?: () => void;
+  onRetry?: () => void;
+}) {
   const { quizcount } = useQuizContext();
   const t = useLocale();
   return (
-    <div className="card text-center">
-      <div className="mb-2 flex flex-col items-center">
-        <div>{t("home_translation_congratulation_title")}</div>
-        <p className="text-sm text-slate-200">
-          You finished a round of {quizcount} quiz!
-        </p>
-        <p className="text-sm text-slate-200">
-          Click on below button to start a new round.
-        </p>
+    <div className="card">
+      <div className="my-4 flex flex-col gap-2 text-center">
+        <div className="flex flex-col items-center">
+          <div>{t("home_translation_congratulation_title")}</div>
+          <p className="text-sm text-slate-200">
+            You finished a round of {quizcount} quiz!
+          </p>
+          <p className="text-sm text-slate-200">
+            Click on below button to start a new round.
+          </p>
+        </div>
+        <div>
+          <button className="rounded-md border p-1 text-sm" onClick={onRetry}>
+            Try again
+          </button>
+        </div>
+        <div>
+          <button className="rounded-md border p-1 text-sm" onClick={onNext}>
+            Continue Next Round
+          </button>
+        </div>
       </div>
-      <button className="rounded-md border p-1 text-sm" onClick={onClick}>
-        Continue
-      </button>
     </div>
   );
 }
 
-function Meaning({ meaning }: Pick<FormalWord, "meaning">) {
+function Meaning({
+  meaning,
+  hideTitle,
+}: Pick<FormalWord, "meaning"> & { hideTitle?: boolean }) {
   const t = useLocale();
   return (
     <div>
-      <div className="text-sm text-fuchsia-100">
-        {t("home_translation_meaning_title")}:{" "}
-      </div>
+      {!hideTitle && (
+        <div className="text-sm text-fuchsia-100">
+          {t("home_translation_meaning_title")}:{" "}
+        </div>
+      )}
       {Object.entries(meaning).map((t, i) => (
         <div key={`translations-meaning-${i}`}>
           <span className="text-md text-white">
