@@ -11,7 +11,7 @@ let HFAttempt = 0;
 let targetRaw: string | null = null;
 export function getJSONOutputPath() {
   const outputPath = targetRaw
-    ? path.resolve(__dirname, "../data/", targetRaw.split(".")[0] + ".json")
+    ? targetRaw.split(".")[0] + ".json"
     : path.resolve(__dirname, "../data/data.json");
   if (!fs.existsSync(outputPath)) {
     fs.writeFileSync(outputPath, JSON.stringify({}), "utf-8");
