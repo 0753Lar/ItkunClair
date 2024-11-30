@@ -6,6 +6,7 @@ import { FormalWord, userPrompt } from "../data/template/word";
 import path from "path";
 import { huggingfaceCall } from "./huggingfaceCall";
 import { copyRawIfNotExist, getTaskPath, isFileEmpty } from "./batchSync";
+import { exit } from "process";
 
 let HFAttempt = 0;
 let targetRaw: string | null = null;
@@ -58,7 +59,7 @@ async function processUnitOfFile(filePath: string) {
   while (!success) {
     if (HFAttempt >= 10) {
       console.log("-------------------REACH MAX ATTEMPT---------------");
-      return;
+      exit(0)
     }
     count++;
     const content = userPrompt(nextLine.trim());
