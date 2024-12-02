@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
-import { localModelhandler, workWithUnitOfTask } from "./process";
+import { huggingfaceModalHandler, workWithUnitOfTask } from "./process";
 
 dotenv.config();
 
 async function main() {
-  await workWithUnitOfTask(localModelhandler);
+  await workWithUnitOfTask(huggingfaceModalHandler);
 }
 
 main();
