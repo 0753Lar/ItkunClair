@@ -5,11 +5,38 @@ import readline from "readline";
 import { FormalWord, userPrompt } from "../data/template/word";
 import path from "path";
 import { huggingfaceCall } from "./huggingfaceCall";
-import { copyRawIfNotExist, getTaskPath, isFileEmpty } from "./batchSync";
 import { exit } from "process";
+import { localModelCall } from "./localModelCall";
 
 let HFAttempt = 0;
 let targetRaw: string | null = null;
+
+export async function localModelhandler(word: string) {
+  try {
+    const res = await localModelCall(userPrompt(word));
+    const obj = JSON.parse(res.data.response);
+    console.log(obj);
+
+    return obj;
+  } catch (error) {
+    console.log(">> localModelhandler error: \n", error);
+    return null;
+  }
+}
+
+export async function huggingfaceModalHandler(word: string) {
+  try {
+    const res = await huggingfaceCall(userPrompt(word));
+    const obj = JSON.parse(res.data[0].generated_text);
+    console.log(obj);
+
+    return obj;
+  } catch (error) {
+    console.log(">> huggingfaceModalHandler error: \n", error);
+    return null;
+  }
+}
+
 export function getJSONOutputPath() {
   const outputPath = targetRaw
     ? targetRaw.split(".")[0] + ".json"
@@ -20,7 +47,43 @@ export function getJSONOutputPath() {
   return outputPath;
 }
 
-export async function workWithUnitOfTask() {
+async function getTaskPath() {
+  return path.resolve(__dirname, "./task.txt");
+}
+
+function copyRawIfNotExist(rawLocation: string) {
+  const copyPath = rawLocation.split(".").join("_copy.");
+
+  if (!fs.existsSync(copyPath)) {
+    fs.copyFileSync(rawLocation, copyPath);
+  }
+  return copyPath;
+}
+
+async function isFileEmpty(filePath: string) {
+  try {
+    const fileStream = fs.createReadStream(filePath);
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity,
+    });
+
+    for await (const line of rl) {
+      if (line.trim() !== "") {
+        return false;
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error(`>> Error reading file: ${error}`);
+    return false;
+  }
+}
+
+export async function workWithUnitOfTask(
+  handler: (word: string) => Promise<FormalWord | null>,
+) {
   const taskPath = await getTaskPath();
 
   const { getLines, validNext, close } = createRl(taskPath);
@@ -38,20 +101,23 @@ export async function workWithUnitOfTask() {
     if (!removeLinesOrderly(taskPath, getLines())) {
       throw new Error("failed to remove line");
     }
-    return await workWithUnitOfTask();
+    return await workWithUnitOfTask(handler);
   } else {
-    await processUnitOfFile(copyRawPath);
-    await workWithUnitOfTask();
+    await processUnitOfFile(copyRawPath, handler);
+    await workWithUnitOfTask(handler);
   }
 }
 
-async function processUnitOfFile(filePath: string) {
+async function processUnitOfFile(
+  filePath: string,
+  handler: (word: string) => Promise<FormalWord | null>,
+) {
   const targetOutputPath = filePath.split(".").join("_result.");
   const { getLines, rl, validNext } = createRl(filePath);
 
   const nextLine = await validNext();
   if (!nextLine) {
-    return await workWithUnitOfTask();
+    return await workWithUnitOfTask(handler);
   }
 
   let count = 0;
@@ -59,16 +125,13 @@ async function processUnitOfFile(filePath: string) {
   while (!success) {
     if (HFAttempt >= 10) {
       console.log("-------------------REACH MAX ATTEMPT---------------");
-      exit(0)
+      exit(0);
     }
     count++;
-    const content = userPrompt(nextLine.trim());
     try {
-      const res = await huggingfaceCall(content);
-      const text = res.data[0].generated_text;
-      if (text) {
+      const obj = await handler(nextLine.trim());
+      if (obj) {
         try {
-          const obj = JSON.parse(text) as FormalWord; // check the result parsable or not
           if (obj.word == nextLine.trim()) {
             appendWordIntoJSON(getJSONOutputPath(), obj);
             ensureWriteFileSync(targetOutputPath, JSON.stringify(obj) + "\n");

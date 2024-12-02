@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
-import { workWithUnitOfTask } from "./process";
+import { localModelhandler, workWithUnitOfTask } from "./process";
+
 dotenv.config();
 
 async function main() {
-  await workWithUnitOfTask();
+  await workWithUnitOfTask(localModelhandler);
 }
 
 main();
