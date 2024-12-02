@@ -1,8 +1,6 @@
 name: Daily AI Task
 
 on:
-  schedule:
-    - cron: "0 19 * * *"
   push:
     branches:
       - chore/timer
