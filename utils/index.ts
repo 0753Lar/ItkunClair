@@ -1,10 +1,20 @@
-interface PronounceOptions {
+export interface PronounceOptions {
   accent?: "us" | "uk" | "zh";
   rate?: number;
-  cancel?: () => void;
+  onend?: () => void;
+  onerror?: (e: unknown) => void;
 }
 
-export async function pronounce(text: string, options?: PronounceOptions) {
+export type Voice = {
+  play: () => void;
+  pause: () => void;
+  cancel: () => void;
+};
+
+export async function pronounce(
+  text: string,
+  options?: PronounceOptions,
+): Promise<Voice> {
   if (isSpeechSynthesisSupported()) {
     try {
       const voices = await getVoices();
@@ -19,26 +29,34 @@ export async function pronounce(text: string, options?: PronounceOptions) {
       const langs = voices.filter((v) => v.lang === lang);
       // console.log(">> langs: ", langs);
 
-      return await new Promise((resolve, reject) => {
-        const utterance = new SpeechSynthesisUtterance(text);
+      const utterance = new SpeechSynthesisUtterance(text);
 
-        utterance.voice = langs[0];
-        utterance.pitch = 0.8;
-        utterance.rate = options?.rate ?? 0.8;
-        utterance.onend = resolve;
-        utterance.onerror = (e) => {
-          console.error("Speech synthesis error:", e.error);
-          fallbackSpeak(text).then(resolve).catch(reject);
-        };
-        speechSynthesis.speak(utterance);
-      });
+      utterance.voice = langs[0];
+      utterance.pitch = 0.8;
+      utterance.rate = options?.rate ?? 0.8;
+      utterance.onend = () => {
+        console.log("utterance end");
+        options?.onend?.();
+      };
+      utterance.onerror = (e) => {
+        if (!["interrupted", "canceled"].includes(e.error)) {
+          console.error("utterance error, trying fallbackSpeak, error: ", e);
+          return fallbackSpeak(text, options);
+        }
+      };
+
+      return {
+        play: () => speechSynthesis.speak(utterance),
+        pause: speechSynthesis.pause,
+        cancel: () => speechSynthesis.cancel(),
+      };
     } catch (error) {
       console.error("Speech synthesis failed:", error);
-      return await fallbackSpeak(text);
+      return fallbackSpeak(text, options);
     }
   } else {
     console.warn("SpeechSynthesis not supported, using fallback.");
-    return await fallbackSpeak(text);
+    return fallbackSpeak(text, options);
   }
 }
 
@@ -46,15 +64,21 @@ export function isSpeechSynthesisSupported() {
   return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
 }
 
-async function fallbackSpeak(text: string) {
+function fallbackSpeak(text: string, options?: PronounceOptions): Voice {
   const audio = new Audio(
     `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${text.replaceAll(" ", "+")}`,
   );
-  return await new Promise((resolve, reject) => {
-    audio.onended = resolve;
-    audio.onerror = reject;
-    audio.play();
-  });
+  audio.onended = () => options?.onend?.();
+  audio.onerror = (e) => options?.onerror?.(e);
+
+  return {
+    play: audio.play,
+    pause: audio.pause,
+    cancel: () => {
+      audio.pause();
+      audio.currentTime = 0;
+    },
+  };
 }
 
 async function getVoices(): Promise<SpeechSynthesisVoice[]> {

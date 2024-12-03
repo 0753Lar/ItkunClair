@@ -6,7 +6,7 @@ import { mapWordModal, useQuizContext } from "../context/quizContext";
 import { useCallback, useEffect, useState } from "react";
 import { FormalWord } from "@/ai/data/template/word";
 import Loading from "@/components/icons/Loading";
-import { pronounce, sleep } from "@/utils";
+import { pronounce, PronounceOptions, sleep, Voice } from "@/utils";
 import Pagination from "@/components/Pagination";
 import Switch from "@/components/icons/Switch";
 import Congratulation from "@/components/Congratulation";
@@ -24,6 +24,8 @@ export default function ListenVoice() {
   const [autoPlay, setAutoPlay] = useState(false);
   const [playing, setPlaying] = useState(false);
 
+  const [voice, setVoice] = useState<Voice | null>(null);
+
   const t = useLocale();
 
   const requestList = () => {
@@ -35,29 +37,54 @@ export default function ListenVoice() {
     });
   };
 
-  const playCurrent = useCallback(
-    async (onend?: () => void) => {
-      await pronounce(quizList[current].word, { accent: "uk" });
-      await pronounce(quizList[current].word, { accent: "us" });
-      for (let i = 0; i < quizList[current].examples.length; i++) {
-        const element = quizList[current].examples[i];
-        await pronounce(element.sentence, { accent: "uk", rate: 0.7 });
-        await sleep(100);
-      }
-      await pronounce(Object.values(quizList[current].meaning)[0], {
-        accent: "zh",
-        rate: 1,
+  const handlePronounce = async (text: string, options?: PronounceOptions) => {
+    return new Promise<void>(async (resolve, reject) => {
+      setPlaying(true);
+      const voice = await pronounce(text, {
+        ...options,
+        onend() {
+          setVoice(null);
+          setPlaying(false);
+          resolve();
+        },
+        onerror() {
+          setVoice(null);
+          setPlaying(false);
+          reject();
+        },
       });
-      await pronounce(quizList[current].word, { accent: "uk" });
-      await pronounce(quizList[current].word, { accent: "us" });
-      onend?.();
-    },
-    [current, quizList],
-  );
+      setVoice(voice);
+      voice.play();
+    });
+  };
+
+  const playCurrent = useCallback(async () => {
+    await handlePronounce(quizList[current].word, { accent: "uk" });
+    await handlePronounce(quizList[current].word, { accent: "us" });
+    for (let i = 0; i < quizList[current].examples.length; i++) {
+      const element = quizList[current].examples[i];
+      await handlePronounce(element.sentence, { accent: "uk", rate: 0.7 });
+      await sleep(100);
+    }
+    await handlePronounce(Object.values(quizList[current].meaning)[0], {
+      accent: "zh",
+      rate: 1,
+    });
+    await handlePronounce(quizList[current].word, { accent: "uk" });
+    await handlePronounce(quizList[current].word, { accent: "us" });
+  }, [current, quizList]);
 
   const onClick = () => {
-    setPlaying(true);
-    playCurrent(() => setAutoPlay(false));
+    if (playing) {
+      if (autoPlay) {
+        setAutoPlay(false);
+      }
+      voice?.cancel();
+      setPlaying(false);
+      setVoice(null);
+    } else {
+      playCurrent();
+    }
   };
 
   useEffect(() => {
@@ -139,7 +166,7 @@ export default function ListenVoice() {
               <span className="h-10" onClick={onClick}>
                 {playing ? <Sound /> : <Pause />}
               </span>
-              <span> click to play</span>
+              <span>click to {playing ? "pause" : "play"}</span>
             </div>
 
             {showWording && <div>{quizList[current].word}</div>}
