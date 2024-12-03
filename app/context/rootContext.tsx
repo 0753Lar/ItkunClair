@@ -9,7 +9,7 @@ export type ThemeMode = "light" | "dark";
 export type Language = "zh" | "en";
 
 export type Config = {
-  translation: {
+  guessWord: {
     showMeaning: boolean;
     showExamples: boolean;
     showExamplesInterpretation: boolean;
@@ -39,7 +39,7 @@ export const RootProvider = ({ children }: PropsWithChildren) => {
   const [language, setLanguage] = useState<Language>("en");
 
   const [config, setConfig] = useState<Config>({
-    translation: {
+    guessWord: {
       showMeaning: true,
       showExamples: true,
       showExamplesInterpretation: false,

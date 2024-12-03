@@ -103,7 +103,7 @@ export default function Translation() {
   return (
     <div className={`flex flex-col gap-2 ${montserrat.className}`}>
       <div className="flex items-baseline justify-between md:text-lg">
-        <span>{t("home_quiz_type_translation")}</span>
+        <span>{t("home_quiz_type_guess_word")}</span>
         {!finishedRound && (
           <div className="flex items-center">
             <span
@@ -152,13 +152,13 @@ export default function Translation() {
               <Pronounciation word={item.word} />
             </div>
 
-            {config.translation.showMeaning && (
+            {config.guessWord.showMeaning && (
               <div>
                 <Meaning meaning={item.meaning} />
               </div>
             )}
 
-            {config.translation.showExamples && (
+            {config.guessWord.showExamples && (
               <div>
                 <Example
                   examples={item.examples}
@@ -171,7 +171,7 @@ export default function Translation() {
             <div>
               <div className={`mt-4relative mb-2`}>
                 <span className="text-sm text-fuchsia-100">
-                  {t("home_translation_enter_title")}:
+                  {t("home_guess_word_enter_title")}:
                 </span>
 
                 <div className="relative flex items-center gap-2">
@@ -215,7 +215,7 @@ export default function Translation() {
               onClick={() => setShowAnswer(true)}
               className="rounded-lg border-none bg-gradient-to-br from-pink-500 to-orange-400 px-4 py-1.5 text-white outline-none md:hover:bg-gradient-to-bl"
             >
-              {t("home_translation_show_answer_title")}
+              {t("home_guess_word_show_answer_title")}
             </button>
 
             {showAnswer && (
@@ -306,7 +306,7 @@ function Congratulation({
     <div className="card">
       <div className="my-4 flex flex-col gap-2 text-center">
         <div className="flex flex-col items-center">
-          <div>{t("home_translation_congratulation_title")}</div>
+          <div>{t("home_guess_word_congratulation_title")}</div>
           <p className="text-sm text-slate-200">
             You finished a round of {quizcount} quiz!
           </p>
@@ -338,11 +338,11 @@ function Meaning({
     <div>
       {!hideTitle && (
         <div className="text-sm text-fuchsia-100">
-          {t("home_translation_meaning_title")}:{" "}
+          {t("home_guess_word_meaning_title")}:{" "}
         </div>
       )}
       {Object.entries(meaning).map((t, i) => (
-        <div key={`translations-meaning-${i}`}>
+        <div key={`guess-words-meaning-${i}`}>
           <span className="text-md text-white">
             {t[0]}. {t[1]}
           </span>
@@ -367,16 +367,16 @@ function Example({
   return (
     <div>
       <div className="text-sm text-fuchsia-100">
-        {t("home_translation_examples_title")}:
+        {t("home_guess_word_examples_title")}:
       </div>
       {!listTobeShow.length ? (
         <div className="w-full text-center">
-          {t("home_translation_examples_empty_error")}
+          {t("home_guess_word_examples_empty_error")}
         </div>
       ) : (
         <div>
           {listTobeShow.map((v, i) => (
-            <div className="flex" key={`translations-example-${i}`}>
+            <div className="flex" key={`guess-words-example-${i}`}>
               <span className={`text-sm`}>{i + 1}.</span>
               <div>
                 <div className={`mb-2 flex flex-col ${notoSans.className}`}>
@@ -399,7 +399,7 @@ function Example({
                       <Sound />
                     </span>
                   </div>
-                  {config.translation.showExamplesInterpretation && (
+                  {config.guessWord.showExamplesInterpretation && (
                     <div>{examples[i].translation}</div>
                   )}
                 </div>

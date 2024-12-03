@@ -6,8 +6,8 @@ import EditableNumber from "../EditableNumber";
 import {
   allChallenge,
   allQuiz,
-  translationdefaultMaxCount,
-  translationdefaultMinCount,
+  guessWordDefaultMaxCount,
+  guessWordDefaultMinCount,
 } from "@/utils/config";
 import Option from "../Option";
 import Switch from "./Switch";
@@ -74,8 +74,8 @@ export default function Setting() {
             <EditableNumber
               initialValue={quizcount}
               onSave={updateQuizcount}
-              min={translationdefaultMinCount}
-              max={translationdefaultMaxCount}
+              min={guessWordDefaultMinCount}
+              max={guessWordDefaultMaxCount}
             />
           </div>
           <div className="flex justify-between">
@@ -90,42 +90,44 @@ export default function Setting() {
               }
             />
           </div>
-          {quizType === "translation" && (
+          {quizType === "guessWord" && (
             <>
               <div className="flex justify-between">
-                <span>{t("config_translation_meaning_title")}:</span>
+                <span>{t("config_guess_word_meaning_title")}:</span>
                 <Switch
-                  isOn={config.translation.showMeaning}
+                  isOn={config.guessWord.showMeaning}
                   onToggle={() =>
                     updateConfig((config) => {
-                      config.translation.showMeaning =
-                        !config.translation.showMeaning;
+                      config.guessWord.showMeaning =
+                        !config.guessWord.showMeaning;
                       return config;
                     })
                   }
                 />
               </div>
               <div className="flex justify-between">
-                <span>{t("config_translation_example_title")}:</span>
+                <span>{t("config_guess_word_example_title")}:</span>
                 <Switch
-                  isOn={config.translation.showExamples}
+                  isOn={config.guessWord.showExamples}
                   onToggle={() =>
                     updateConfig((config) => {
-                      config.translation.showExamples =
-                        !config.translation.showExamples;
+                      config.guessWord.showExamples =
+                        !config.guessWord.showExamples;
                       return config;
                     })
                   }
                 />
               </div>
               <div className="flex justify-between">
-                <span>{t("config_translation_example_interpretation_title")}:</span>
+                <span>
+                  {t("config_guess_word_example_interpretation_title")}:
+                </span>
                 <Switch
-                  isOn={config.translation.showExamplesInterpretation}
+                  isOn={config.guessWord.showExamplesInterpretation}
                   onToggle={() =>
                     updateConfig((config) => {
-                      config.translation.showExamplesInterpretation =
-                        !config.translation.showExamplesInterpretation;
+                      config.guessWord.showExamplesInterpretation =
+                        !config.guessWord.showExamplesInterpretation;
                       return config;
                     })
                   }

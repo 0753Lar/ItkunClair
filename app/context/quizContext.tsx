@@ -30,7 +30,7 @@ export const QuizProvider = ({ children }: PropsWithChildren) => {
   const [quizcount, setQuizcount] = useState(10);
   const [quiz, setQuiz] = useState<QuizContextInterface["quiz"]>("Oxford3000");
   const [quizType, setQuizType] =
-    useState<QuizContextInterface["quizType"]>("translation");
+    useState<QuizContextInterface["quizType"]>("guessWord");
 
   const quizValue: QuizContextInterface = {
     quiz,

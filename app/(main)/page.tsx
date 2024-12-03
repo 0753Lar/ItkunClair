@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <section className="py-2 px-4">
       <div className="md:flex md:justify-center">
-        {quizType === "translation" && (
+        {quizType === "guessWord" && (
           <div className="md:max-w-2xl md:w-3/5">
             <Translation />
           </div>

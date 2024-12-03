@@ -1,18 +1,18 @@
 {
   "home_quiz_vocabulary_title": "Vocabulary",
   "home_quiz_challenge_title": "Challenge",
-  "home_quiz_type_translation": "Translation",
+  "home_quiz_type_guess_word": "Guess Word",
   "home_quiz_count_title": "Quiz count",
-  "home_translation_meaning_title": "Interpretation",
-  "home_translation_examples_title": "Examples",
-  "home_translation_examples_empty_error": "Sorry, currently no examples to show!",
-  "home_translation_congratulation_title": "Congratulations!",
-  "home_translation_enter_title": "Enter word",
-  "home_translation_show_answer_title": "Check Answer",
+  "home_guess_word_meaning_title": "Interpretation",
+  "home_guess_word_examples_title": "Examples",
+  "home_guess_word_examples_empty_error": "Sorry, currently no examples to show!",
+  "home_guess_word_congratulation_title": "Congratulations!",
+  "home_guess_word_enter_title": "Enter word",
+  "home_guess_word_show_answer_title": "Check Answer",
   "home_pronounciation_title": "Pronounce",
   "config_pronounciation_show_title": "Show Pronounciation",
   "config_pronounciation_auto_title": "Auto Pronounce",
-  "config_translation_meaning_title": "Show Chinese Meaning",
-  "config_translation_example_title": "Show Examples",
-  "config_translation_example_interpretation_title": "Show Examples Interpretation"
+  "config_guess_word_meaning_title": "Show Chinese Meaning",
+  "config_guess_word_example_title": "Show Examples",
+  "config_guess_word_example_interpretation_title": "Show Examples Interpretation"
 }
