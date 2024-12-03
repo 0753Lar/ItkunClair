@@ -52,7 +52,7 @@ The application should now be running at [http://localhost:3000](http://localhos
 
 ## Todo List
 
-- [x] &nbsp;Integrate mongodb to docker. </br>
+- [x] &nbsp;Integrate mongodb into docker. </br>
 - [x] &nbsp;AI Batch Task: automatic word data generation </br>
 - [ ] &nbsp;Change useLocate to i18n.</br>
 - [x] &nbsp;Add 'go back' & 'go next' buttons </br>
