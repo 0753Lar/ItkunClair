@@ -1,7 +1,8 @@
 {
   "home_quiz_vocabulary_title": "词库",
   "home_quiz_challenge_title": "挑战",
-  "home_quiz_type_guess_word": "猜单词",
+  "home_quiz_type_guess_word": "词汇挑战",
+  "home_quiz_type_listen_voice": "听力兄弟",
   "home_quiz_count_title": "题目数量",
   "home_guess_word_meaning_title": "中文释义",
   "home_guess_word_examples_title": "例句",

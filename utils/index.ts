@@ -47,7 +47,7 @@ async function getVoices(): Promise<SpeechSynthesisVoice[]> {
         const voices = window.speechSynthesis.getVoices();
         if (!voices.length) {
           setTimeout(() => {
-            getVoices().then(resolve)
+            getVoices().then(resolve);
           }, 300);
         } else {
           resolve(voices);
@@ -56,3 +56,15 @@ async function getVoices(): Promise<SpeechSynthesisVoice[]> {
     }
   });
 }
+
+export function camel2Snake<T extends string>(str: T): CamelToSnake<T> {
+  return str
+    .replace(/([a-z])([A-Z])/g, "$1_$2")
+    .toLowerCase() as CamelToSnake<T>;
+}
+
+type CamelToSnake<T extends string> = T extends `${infer First}${infer Rest}`
+  ? First extends Uppercase<First>
+    ? `_${Lowercase<First>}${CamelToSnake<Rest>}`
+    : `${First}${CamelToSnake<Rest>}`
+  : T;

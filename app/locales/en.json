@@ -1,7 +1,8 @@
 {
   "home_quiz_vocabulary_title": "Vocabulary",
   "home_quiz_challenge_title": "Challenge",
-  "home_quiz_type_guess_word": "Guess Word",
+  "home_quiz_type_guess_word": "VocabSolver",
+  "home_quiz_type_listen_voice": "VoiceBuddy",
   "home_quiz_count_title": "Quiz count",
   "home_guess_word_meaning_title": "Interpretation",
   "home_guess_word_examples_title": "Examples",

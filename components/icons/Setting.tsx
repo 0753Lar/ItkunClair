@@ -12,6 +12,7 @@ import {
 import Option from "../Option";
 import Switch from "./Switch";
 import { useRootContext } from "@/app/context/rootContext";
+import { camel2Snake } from "@/utils";
 
 export default function Setting() {
   const [isSetting, setIsSetting] = useState(false);
@@ -63,8 +64,10 @@ export default function Setting() {
             <span>{t("home_quiz_challenge_title")}:</span>
             <div>
               <Option
-                options={allChallenge.map((v) => ({ label: v }))}
-                selectedLabel={quizType}
+                options={allChallenge.map((v) => ({
+                  label: t(`home_quiz_type_${camel2Snake(v)}`),
+                }))}
+                selectedLabel={t(`home_quiz_type_${camel2Snake(quizType)}`)}
                 onSelect={updateQuizType as (val: string) => void}
               />
             </div>
