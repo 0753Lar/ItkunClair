@@ -1,27 +1,44 @@
-export async function pronounce(text: string, accent?: "us" | "uk") {
+interface PronounceOptions {
+  accent?: "us" | "uk" | "zh";
+  rate?: number;
+  cancel?: () => void;
+}
+
+export async function pronounce(text: string, options?: PronounceOptions) {
   if (isSpeechSynthesisSupported()) {
     try {
       const voices = await getVoices();
-      const accents = voices.filter((v) =>
-        accent === "us" ? v.lang === "en-US" : v.lang === "en-GB",
-      );
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = accents[1];
-      utterance.pitch = 0.8;
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
 
-      utterance.onerror = (e) => {
-        console.error("Speech synthesis error:", e.error);
-        fallbackSpeak(text);
-      };
+      const lang =
+        options?.accent === "us"
+          ? "en-US"
+          : options?.accent === "zh"
+            ? "zh-CN"
+            : "en-GB";
+
+      const langs = voices.filter((v) => v.lang === lang);
+      // console.log(">> langs: ", langs);
+
+      return await new Promise((resolve, reject) => {
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        utterance.voice = langs[0];
+        utterance.pitch = 0.8;
+        utterance.rate = options?.rate ?? 0.8;
+        utterance.onend = resolve;
+        utterance.onerror = (e) => {
+          console.error("Speech synthesis error:", e.error);
+          fallbackSpeak(text).then(resolve).catch(reject);
+        };
+        speechSynthesis.speak(utterance);
+      });
     } catch (error) {
       console.error("Speech synthesis failed:", error);
-      fallbackSpeak(text);
+      return await fallbackSpeak(text);
     }
   } else {
     console.warn("SpeechSynthesis not supported, using fallback.");
-    fallbackSpeak(text);
+    return await fallbackSpeak(text);
   }
 }
 
@@ -29,11 +46,15 @@ export function isSpeechSynthesisSupported() {
   return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
 }
 
-function fallbackSpeak(text: string) {
+async function fallbackSpeak(text: string) {
   const audio = new Audio(
     `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${text.replaceAll(" ", "+")}`,
   );
-  audio.play();
+  return await new Promise((resolve, reject) => {
+    audio.onended = resolve;
+    audio.onerror = reject;
+    audio.play();
+  });
 }
 
 async function getVoices(): Promise<SpeechSynthesisVoice[]> {
@@ -68,3 +89,7 @@ type CamelToSnake<T extends string> = T extends `${infer First}${infer Rest}`
     ? `_${Lowercase<First>}${CamelToSnake<Rest>}`
     : `${First}${CamelToSnake<Rest>}`
   : T;
+
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

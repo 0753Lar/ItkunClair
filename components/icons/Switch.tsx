@@ -23,7 +23,7 @@ const Switch: React.FC<SwitchProps> = ({ isOn, onToggle, disabled }) => {
       <span
         className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
           on ? "translate-x-5" : "translate-x-0"
-        } ${disabled ? "bg-slate-50/40" : ""}`}
+        } ${disabled ? "bg-slate-100/20" : ""}`}
       />
     </button>
   );

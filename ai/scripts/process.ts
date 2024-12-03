@@ -1,4 +1,4 @@
-import { ensureWriteFileSync, sleep } from "@/utils/nodeUtils";
+import { ensureWriteFileSync } from "@/utils/nodeUtils";
 import axios from "axios";
 import fs from "fs";
 import readline from "readline";
@@ -7,6 +7,7 @@ import path from "path";
 import { huggingfaceCall } from "./huggingfaceCall";
 import { exit } from "process";
 import { localModelCall } from "./localModelCall";
+import { sleep } from "@/utils";
 
 let HFAttempt = 0;
 let targetRaw: string | null = null;

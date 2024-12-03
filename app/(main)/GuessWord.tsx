@@ -11,14 +11,14 @@ import { FormalWord } from "@/ai/data/template/word";
 import { useRootContext } from "../context/rootContext";
 import Sound from "@/components/icons/Sound";
 import { pronounce } from "@/utils";
-import ToLeft from "@/components/icons/ToLeft";
-import ToRight from "@/components/icons/ToRight";
+import Pagination from "@/components/Pagination";
+import Congratulation from "@/components/Congratulation";
 
 const animateDuration = 500;
 
 type InputStatus = "success" | "error" | "normal";
 
-export default function Translation() {
+export default function GuessWord() {
   const { quiz, quizcount } = useQuizContext();
   const { config } = useRootContext();
   const t = useLocale();
@@ -94,7 +94,7 @@ export default function Translation() {
         }
       }, animateDuration);
     }
-  }, [inputRef, isSuccess, status]);
+  }, [inputRef, isSuccess, quizcount, status]);
 
   if (quizcount === 0 || !item) {
     return <LoadingSection />;
@@ -105,25 +105,11 @@ export default function Translation() {
       <div className="flex items-baseline justify-between md:text-lg">
         <span>{t("home_quiz_type_guess_word")}</span>
         {!finishedRound && (
-          <div className="flex items-center">
-            <span
-              className="h-4 md:hover:cursor-pointer md:hover:text-slate-200/80"
-              onClick={() => setCurrent((val) => Math.max(0, val - 1))}
-            >
-              <ToLeft />
-            </span>
-            <span className="text-sm md:text-base">
-              {current + 1}/{quizcount}
-            </span>
-            <span
-              className="h-4 md:hover:cursor-pointer md:hover:text-slate-200/80"
-              onClick={() =>
-                setCurrent((val) => Math.min(quizcount - 1, val + 1))
-              }
-            >
-              <ToRight />
-            </span>
-          </div>
+          <Pagination
+            current={current}
+            total={quizcount}
+            onChange={setCurrent}
+          />
         )}
       </div>
       {loading ? (
@@ -289,42 +275,6 @@ function Pronounciation({ word }: { word: string }) {
       >
         <Sound />
       </span>
-    </div>
-  );
-}
-
-function Congratulation({
-  onNext,
-  onRetry,
-}: {
-  onNext?: () => void;
-  onRetry?: () => void;
-}) {
-  const { quizcount } = useQuizContext();
-  const t = useLocale();
-  return (
-    <div className="card">
-      <div className="my-4 flex flex-col gap-2 text-center">
-        <div className="flex flex-col items-center">
-          <div>{t("home_guess_word_congratulation_title")}</div>
-          <p className="text-sm text-slate-200">
-            You finished a round of {quizcount} quiz!
-          </p>
-          <p className="text-sm text-slate-200">
-            Click on below button to start a new round.
-          </p>
-        </div>
-        <div>
-          <button className="rounded-md border p-1 text-sm" onClick={onRetry}>
-            Try again
-          </button>
-        </div>
-        <div>
-          <button className="rounded-md border p-1 text-sm" onClick={onNext}>
-            Continue Next Round
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

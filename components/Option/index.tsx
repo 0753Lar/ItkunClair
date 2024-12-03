@@ -35,7 +35,7 @@ const Option = ({ options, onSelect, selectedLabel }: OptionProps) => {
       </button>
 
       {isOpen && (
-        <div className="absolute w-full rounded-md border-[1px] border-slate-50 border-opacity-20 bg-slate-100/90 bg-clip-padding shadow-lg backdrop-blur-3xl backdrop-filter z-20">
+        <div className="absolute z-20 w-full rounded-md border-[1px] border-slate-50 border-opacity-20 bg-slate-100/90 bg-clip-padding shadow-lg backdrop-blur-3xl backdrop-filter">
           <div className="">
             {options.map((option) => (
               <div

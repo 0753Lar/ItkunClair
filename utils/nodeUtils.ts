@@ -50,10 +50,6 @@ export function appendWithTimestamp(
   }
 }
 
-export function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export async function handleJSONLFile(
   filePath: string,
   lineHandler: (line: string) => Promise<void>,

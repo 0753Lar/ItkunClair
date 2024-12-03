@@ -65,6 +65,7 @@ export default function Setting() {
             <div>
               <Option
                 options={allChallenge.map((v) => ({
+                  value: v,
                   label: t(`home_quiz_type_${camel2Snake(v)}`),
                 }))}
                 selectedLabel={t(`home_quiz_type_${camel2Snake(quizType)}`)}
