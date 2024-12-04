@@ -6,11 +6,12 @@ import { mapWordModal, useQuizContext } from "../context/quizContext";
 import { useCallback, useEffect, useState } from "react";
 import { FormalWord } from "@/ai/data/template/word";
 import Loading from "@/components/icons/Loading";
-import { pronounce, PronounceOptions, sleep, Voice } from "@/utils";
+import { sleep } from "@/utils";
 import Pagination from "@/components/Pagination";
 import Switch from "@/components/icons/Switch";
 import Congratulation from "@/components/Congratulation";
 import { Pause } from "@/components/icons/Pause";
+import { usePronounce } from "@/hooks/usePronounce";
 
 export default function ListenVoice() {
   const { quiz, quizcount } = useQuizContext();
@@ -22,9 +23,8 @@ export default function ListenVoice() {
   const [showMeaning, setShowMeaning] = useState(true);
   const [showChinese, setShowChinese] = useState(false);
   const [autoPlay, setAutoPlay] = useState(false);
+  const { pronounce, cancel } = usePronounce();
   const [playing, setPlaying] = useState(false);
-
-  const [voice, setVoice] = useState<Voice | null>(null);
 
   const t = useLocale();
 
@@ -37,52 +37,32 @@ export default function ListenVoice() {
     });
   };
 
-  const handlePronounce = async (text: string, options?: PronounceOptions) => {
-    return new Promise<void>(async (resolve, reject) => {
-      setPlaying(true);
-      const voice = await pronounce(text, {
-        ...options,
-        onend() {
-          setVoice(null);
-          setPlaying(false);
-          resolve();
-        },
-        onerror(e) {
-          setVoice(null);
-          setPlaying(false);
-          console.error("pronounce error: ", e);
-          reject();
-        },
-      });
-      setVoice(voice);
-      voice.play();
-    });
-  };
-
   const playCurrent = useCallback(async () => {
-    await handlePronounce(quizList[current].word, { accent: "uk" });
-    await handlePronounce(quizList[current].word, { accent: "us" });
+    setPlaying(true);
+    await pronounce(quizList[current].word, { accent: "uk" });
+    await pronounce(quizList[current].word, { accent: "us" });
     for (let i = 0; i < quizList[current].examples.length; i++) {
       const element = quizList[current].examples[i];
-      await handlePronounce(element.sentence, { accent: "uk", rate: 0.7 });
+      await pronounce(element.sentence, { accent: "uk", rate: 0.7 });
       await sleep(100);
     }
-    await handlePronounce(Object.values(quizList[current].meaning)[0], {
+    await pronounce(Object.values(quizList[current].meaning)[0], {
       accent: "zh",
       rate: 1,
     });
-    await handlePronounce(quizList[current].word, { accent: "uk" });
-    await handlePronounce(quizList[current].word, { accent: "us" });
-  }, [current, quizList]);
+    await pronounce(quizList[current].word, { accent: "uk" });
+    await pronounce(quizList[current].word, { accent: "us" });
+    await sleep(300);
+    setPlaying(false);
+  }, [current, pronounce, quizList]);
 
-  const onClick = () => {
+  const onPlayClick = () => {
     if (playing) {
       if (autoPlay) {
         setAutoPlay(false);
       }
-      voice?.cancel();
+      cancel();
       setPlaying(false);
-      setVoice(null);
     } else {
       playCurrent();
     }
@@ -94,16 +74,14 @@ export default function ListenVoice() {
   }, [quiz, quizcount]);
 
   useEffect(() => {
-    if (autoPlay) {
-      playCurrent().then(() =>
-        setTimeout(() => {
-          if (current === quizcount - 1) {
-            setFinishedRound(true);
-          } else {
-            setCurrent(current + 1);
-          }
-        }, 300),
-      );
+    if (autoPlay && !playing) {
+      playCurrent().then(() => {
+        if (current === quizcount - 1) {
+          setFinishedRound(true);
+        } else {
+          setCurrent(current + 1);
+        }
+      });
     }
   }, [autoPlay, current, playCurrent, quizcount]);
 
@@ -140,7 +118,6 @@ export default function ListenVoice() {
               <div>auto play</div>
               <Switch
                 onToggle={(val) => {
-                  setPlaying(val);
                   setAutoPlay(val);
                 }}
                 isOn={autoPlay}
@@ -164,7 +141,7 @@ export default function ListenVoice() {
             </div>
 
             <div className="flex flex-col items-center py-2">
-              <span className="h-10" onClick={onClick}>
+              <span className="h-10" onClick={onPlayClick}>
                 {playing ? <Sound /> : <Pause />}
               </span>
               <span>click to {playing ? "pause" : "play"}</span>

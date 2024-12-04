@@ -10,9 +10,9 @@ import Loading from "@/components/icons/Loading";
 import { FormalWord } from "@/ai/data/template/word";
 import { useRootContext } from "../context/rootContext";
 import Sound from "@/components/icons/Sound";
-import { pronounce } from "@/utils";
 import Pagination from "@/components/Pagination";
 import Congratulation from "@/components/Congratulation";
+import { usePronounce } from "@/hooks/usePronounce";
 
 const animateDuration = 500;
 
@@ -223,6 +223,14 @@ function Answer({
   meaning,
   phonetics,
 }: Pick<FormalWord, "word" | "meaning" | "phonetics">) {
+  const { pronounce, cancel, playing } = usePronounce();
+  const onSoundClick = (text: string) => {
+    if (playing) {
+      cancel();
+    }
+    pronounce(text);
+  };
+
   return (
     <div>
       <div className="text-xl">{word}</div>
@@ -232,7 +240,7 @@ function Answer({
           &nbsp;
           <span
             className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
-            onClick={() => pronounce(word)}
+            onClick={() => onSoundClick(word)}
           >
             <Sound />
           </span>
@@ -256,6 +264,13 @@ function LoadingSection() {
 function Pronounciation({ word }: { word: string }) {
   const { config } = useRootContext();
   const t = useLocale();
+  const { pronounce, cancel, playing } = usePronounce();
+  const onSoundClick = (text: string) => {
+    if (playing) {
+      cancel();
+    }
+    pronounce(text);
+  };
 
   useEffect(() => {
     if (config.pronounciation.auto) {
@@ -271,7 +286,7 @@ function Pronounciation({ word }: { word: string }) {
       &nbsp;
       <span
         className="h-4 md:hover:cursor-pointer md:hover:text-slate-300"
-        onClick={() => pronounce(word)}
+        onClick={() => onSoundClick(word)}
       >
         <Sound />
       </span>
@@ -309,6 +324,13 @@ function Example({
 }: Pick<FormalWord, "examples" | "word"> & { value: string }) {
   const t = useLocale();
   const { config } = useRootContext();
+  const { pronounce, cancel, playing } = usePronounce();
+  const onSoundClick = (text: string) => {
+    if (playing) {
+      cancel();
+    }
+    pronounce(text);
+  };
 
   const listTobeShow = examples
     .map((v) => splitWordFromSentence(word, value, v.sentence))
@@ -344,7 +366,7 @@ function Example({
                     &nbsp;
                     <span
                       className="inline-block h-4 translate-y-0.5 md:hover:cursor-pointer md:hover:text-slate-300"
-                      onClick={() => pronounce(v[0] + word + v[2])}
+                      onClick={() => onSoundClick(v[0] + word + v[2])}
                     >
                       <Sound />
                     </span>

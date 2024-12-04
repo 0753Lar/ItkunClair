@@ -40,7 +40,7 @@ export async function pronounce(
           console.error("utterance error, trying fallbackSpeak, error: ", e);
           return fallbackSpeak(text, options);
         } else {
-          options?.onerror?.(e);
+          console.warn(e.error);
         }
       };
 
