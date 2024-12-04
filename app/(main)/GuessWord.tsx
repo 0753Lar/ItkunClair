@@ -110,8 +110,8 @@ export default function GuessWord({ title }: GuessWordProps) {
   }
 
   return (
-    <div className={`flex flex-col gap-2 ${montserrat.className}`}>
-      <div className="flex items-baseline justify-between md:text-lg">
+    <div className={`flex flex-col gap-2 ${montserrat.className} w-full`}>
+      <div className="flex w-full items-baseline justify-between md:text-lg">
         {title}
         {!finishedRound && (
           <Pagination
