@@ -59,9 +59,15 @@ The application should now be running at [http://localhost:3000](http://localhos
 - [x] &nbsp;Data persistence </br>
 - [x] &nbsp;Feature add 'Automatic play the words and examples. </br>
 - [x] &nbsp;Add Pronunciation ability </br>
-- [ ] &nbsp;Integrate AI to come up with the training suggestion. </br> 
-
+- [ ] &nbsp;Integrate AI to come up with the training suggestion. </br>
 
 ### [Contributors](https://github.com/0753Lar/ItkunClair/graphs/contributors)
 
 ![Contributors](https://contrib.rocks/image?repo=0753Lar/ItkunClair)
+
+### Screenshot
+
+<div style="display: flex; flex-wrap: wrap;">
+    <img src="docs/vocabSolver.png" alt="screenshot" />
+    <img src="docs/voiceBuddy.png" alt="screenshot" />
+</div>
