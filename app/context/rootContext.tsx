@@ -1,8 +1,9 @@
 "use client";
 
-import { PropsWithChildren, useContext, useState } from "react";
+import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import { montserrat } from "../fonts";
+import { getPersistentData, updatePersistenData } from "@/utils/persistent";
 
 export type ThemeMode = "light" | "dark";
 
@@ -40,7 +41,6 @@ export const useRootContext = () =>
 export const RootProvider = ({ children }: PropsWithChildren) => {
   const [theme, setTheme] = useState<ThemeMode>("light");
   const [language, setLanguage] = useState<Language>("en");
-
   const [config, setConfig] = useState<Config>({
     guessWord: {
       showMeaning: true,
@@ -57,30 +57,49 @@ export const RootProvider = ({ children }: PropsWithChildren) => {
     },
   });
 
-  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
-  const toggleLanguage = () => setLanguage(language === "zh" ? "en" : "zh");
-  const updateConfig = (update: (old: Config) => Config) => {
-    setConfig({ ...update(config) });
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    updatePersistenData("theme", newTheme);
   };
+  const toggleLanguage = () => {
+    const newLang = language === "zh" ? "en" : "zh";
+    setLanguage(newLang);
+    updatePersistenData("language", newLang);
+  };
+  const updateConfig = (update: (old: Config) => Config) => {
+    const newConfig = { ...update(config) };
+    setConfig(newConfig);
+    updatePersistenData("config", newConfig);
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      const persistentData = getPersistentData();
+      setConfig(persistentData.config);
+      setTheme(persistentData.theme);
+      setLanguage(persistentData.language);
+    }, 300);
+  }, []);
   return (
-    <rootContext.Provider
-      value={{
-        theme,
-        toggleTheme,
-        language,
-        toggleLanguage,
-        config,
-        updateConfig,
-      }}
-    >
-      <html className={theme} lang={language}>
+    <html className={theme} lang={language}>
+      <rootContext.Provider
+        value={{
+          theme,
+          toggleTheme,
+          language,
+          toggleLanguage,
+          config,
+          updateConfig,
+        }}
+      >
         <body
           className={`relative min-h-screen antialiased ${montserrat.className}`}
         >
           {children}
           <div id="portal" />
         </body>
-      </html>
-    </rootContext.Provider>
+      </rootContext.Provider>
+    </html>
   );
 };
