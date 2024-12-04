@@ -56,7 +56,7 @@ The application should now be running at [http://localhost:3000](http://localhos
 - [x] &nbsp;AI Batch Task: automatic word data generation </br>
 - [ ] &nbsp;Change useLocate to i18n.</br>
 - [x] &nbsp;Add 'go back' & 'go next' buttons </br>
-- [ ] &nbsp;Data persistence </br>
+- [x] &nbsp;Data persistence </br>
 - [x] &nbsp;Feature add 'Automatic play the words and examples. </br>
 - [x] &nbsp;Add Pronunciation ability </br>
 - [ ] &nbsp;Integrate AI to come up with the training suggestion. </br> 
