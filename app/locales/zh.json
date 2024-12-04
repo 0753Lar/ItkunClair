@@ -2,7 +2,7 @@
   "home_quiz_vocabulary_title": "词库",
   "home_quiz_challenge_title": "挑战",
   "home_quiz_type_guess_word": "词汇挑战",
-  "home_quiz_type_listen_voice": "听力兄弟",
+  "home_quiz_type_listen_voice": "听力训练",
   "home_quiz_count_title": "题目数量",
   "home_guess_word_meaning_title": "中文释义",
   "home_guess_word_examples_title": "例句",
@@ -15,5 +15,9 @@
   "config_pronounciation_auto_title": "自动发音",
   "config_guess_word_meaning_title": "展示中文释义",
   "config_guess_word_example_title": "展示例句",
-  "config_guess_word_example_interpretation_title": "展示例句释义"
+  "config_guess_word_example_interpretation_title": "展示例句释义",
+  "config_listen_voice_auto_play_title": "自动播放",
+  "config_listen_voice_show_wording_title": "展示单词例句",
+  "config_listen_voice_show_meaning_title": "展示单词释义",
+  "config_listen_voice_show_chinese_title": "展示例句释义"
 }

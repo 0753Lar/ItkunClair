@@ -4,26 +4,15 @@ import { useQuizContext } from "@/app/context/quizContext";
 import { useLocale } from "@/hooks/useLocale";
 import EditableNumber from "../EditableNumber";
 import {
-  allChallenge,
-  allQuiz,
   guessWordDefaultMaxCount,
   guessWordDefaultMinCount,
 } from "@/utils/config";
-import Option from "../Option";
 import Switch from "./Switch";
 import { useRootContext } from "@/app/context/rootContext";
-import { camel2Snake } from "@/utils";
 
 export default function Setting() {
   const [isSetting, setIsSetting] = useState(false);
-  const {
-    quiz,
-    quizType,
-    updateQuizType,
-    updateQuiz,
-    quizcount,
-    updateQuizcount,
-  } = useQuizContext();
+  const { quizType, quizcount, updateQuizcount } = useQuizContext();
 
   const { config, updateConfig } = useRootContext();
 
@@ -51,29 +40,6 @@ export default function Setting() {
       <Modal open={isSetting} onClose={() => setIsSetting(false)}>
         <div className="flex flex-col gap-2 pt-1 text-sm">
           <div className="flex justify-between">
-            <span>{t("home_quiz_vocabulary_title")}:</span>
-            <div>
-              <Option
-                options={allQuiz.map((v) => ({ label: v }))}
-                selectedLabel={quiz}
-                onSelect={updateQuiz as (val: string) => void}
-              />
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <span>{t("home_quiz_challenge_title")}:</span>
-            <div>
-              <Option
-                options={allChallenge.map((v) => ({
-                  value: v,
-                  label: t(`home_quiz_type_${camel2Snake(v)}`),
-                }))}
-                selectedLabel={t(`home_quiz_type_${camel2Snake(quizType)}`)}
-                onSelect={updateQuizType as (val: string) => void}
-              />
-            </div>
-          </div>
-          <div className="flex justify-between">
             <span>{t("home_quiz_count_title")}:</span>
             <EditableNumber
               initialValue={quizcount}
@@ -82,20 +48,22 @@ export default function Setting() {
               max={guessWordDefaultMaxCount}
             />
           </div>
-          <div className="flex justify-between">
-            <span>{t("config_pronounciation_auto_title")}:</span>
-            <Switch
-              isOn={config.pronounciation.auto}
-              onToggle={() =>
-                updateConfig((config) => {
-                  config.pronounciation.auto = !config.pronounciation.auto;
-                  return config;
-                })
-              }
-            />
-          </div>
+
           {quizType === "guessWord" && (
             <>
+              <div className="flex justify-between">
+                <span>{t("config_pronounciation_auto_title")}:</span>
+                <Switch
+                  isOn={config.guessWord.autoPronounce}
+                  onToggle={() =>
+                    updateConfig((config) => {
+                      config.guessWord.autoPronounce =
+                        !config.guessWord.autoPronounce;
+                      return config;
+                    })
+                  }
+                />
+              </div>
               <div className="flex justify-between">
                 <span>{t("config_guess_word_meaning_title")}:</span>
                 <Switch
@@ -135,6 +103,51 @@ export default function Setting() {
                       return config;
                     })
                   }
+                />
+              </div>
+            </>
+          )}
+
+          {quizType === "listenVoice" && (
+            <>
+              <div className="flex items-center justify-between">
+                <div>{t("config_listen_voice_show_wording_title")}</div>
+                <Switch
+                  onToggle={() =>
+                    updateConfig((config) => {
+                      config.listenVoice.showWording =
+                        !config.listenVoice.showWording;
+                      return config;
+                    })
+                  }
+                  isOn={config.listenVoice.showWording}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>{t("config_listen_voice_show_meaning_title")}</div>
+                <Switch
+                  onToggle={() =>
+                    updateConfig((config) => {
+                      config.listenVoice.showMeaning =
+                        !config.listenVoice.showMeaning;
+                      return config;
+                    })
+                  }
+                  isOn={config.listenVoice.showMeaning}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>{t("config_listen_voice_show_chinese_title")}</div>
+                <Switch
+                  onToggle={() =>
+                    updateConfig((config) => {
+                      config.listenVoice.showChinese =
+                        !config.listenVoice.showChinese;
+                      return config;
+                    })
+                  }
+                  disabled={!config.listenVoice.showWording}
+                  isOn={config.listenVoice.showChinese}
                 />
               </div>
             </>

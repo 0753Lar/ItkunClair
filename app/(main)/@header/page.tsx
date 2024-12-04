@@ -7,9 +7,11 @@ import ToggleLanguage from "@/components/icons/ToggleLanguage";
 import ToggleTheme from "@/components/icons/ToggleTheme";
 import { useLocale } from "@/hooks/useLocale";
 import pkg from "@/package.json";
+import Option from "@/components/Option";
+import { allQuiz } from "@/utils/config";
 
 export default function Header() {
-  const { quiz } = useQuizContext();
+  const { quiz, updateQuiz } = useQuizContext();
 
   const t = useLocale();
 
@@ -17,8 +19,15 @@ export default function Header() {
     <header>
       <div className="ml-4 mr-4 flex flex-row items-start justify-between py-4 md:ml-2">
         <div className="flex flex-col text-sm md:flex-row md:gap-2">
-          <div>
-            {t("home_quiz_vocabulary_title")}: {quiz}
+          <div className="flex justify-between">
+            <span>{t("home_quiz_vocabulary_title")} &nbsp;</span>
+            <div>
+              <Option
+                options={allQuiz.map((v) => ({ label: v }))}
+                selectedLabel={quiz}
+                onSelect={updateQuiz as (val: string) => void}
+              />
+            </div>
           </div>
         </div>
 

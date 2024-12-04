@@ -1,4 +1,10 @@
-import { createRef, KeyboardEventHandler, useEffect, useState } from "react";
+import {
+  createRef,
+  KeyboardEventHandler,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 import "animate.css";
 import Enter from "@/components/icons/Enter";
 import { useLocale } from "@/hooks/useLocale";
@@ -18,7 +24,10 @@ const animateDuration = 500;
 
 type InputStatus = "success" | "error" | "normal";
 
-export default function GuessWord() {
+interface GuessWordProps {
+  title: ReactNode;
+}
+export default function GuessWord({ title }: GuessWordProps) {
   const { quiz, quizcount } = useQuizContext();
   const { config } = useRootContext();
   const t = useLocale();
@@ -103,7 +112,7 @@ export default function GuessWord() {
   return (
     <div className={`flex flex-col gap-2 ${montserrat.className}`}>
       <div className="flex items-baseline justify-between md:text-lg">
-        <span>{t("home_quiz_type_guess_word")}</span>
+        {title}
         {!finishedRound && (
           <Pagination
             current={current}
@@ -273,10 +282,10 @@ function Pronounciation({ word }: { word: string }) {
   };
 
   useEffect(() => {
-    if (config.pronounciation.auto) {
+    if (config.guessWord.autoPronounce) {
       setTimeout(() => pronounce(word), animateDuration);
     }
-  }, [word, config.pronounciation.auto]);
+  }, [word, config.guessWord.autoPronounce]);
 
   return (
     <div className="flex items-center">

@@ -14,10 +14,13 @@ export type Config = {
     showExamples: boolean;
     showExamplesInterpretation: boolean;
     exampleLimit: number;
+    autoPronounce: boolean;
   };
-  pronounciation: {
-    auto: boolean;
-    accent: "us" | "uk";
+  listenVoice: {
+    autoPlay: boolean;
+    showWording: boolean;
+    showMeaning: boolean;
+    showChinese: boolean;
   };
 };
 export interface rootContextInterface {
@@ -44,10 +47,13 @@ export const RootProvider = ({ children }: PropsWithChildren) => {
       showExamples: true,
       showExamplesInterpretation: false,
       exampleLimit: 3, // the example count, only 3 currently
+      autoPronounce: false,
     },
-    pronounciation: {
-      auto: false,
-      accent: "uk",
+    listenVoice: {
+      autoPlay: false,
+      showWording: true,
+      showMeaning: true,
+      showChinese: false,
     },
   });
 

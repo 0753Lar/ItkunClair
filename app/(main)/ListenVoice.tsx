@@ -1,9 +1,8 @@
-import { useLocale } from "@/hooks/useLocale";
 import { montserrat } from "../fonts";
 import Sound from "@/components/icons/Sound";
 import { fetchFormalWords } from "@/lib/mongoose/actions/fetchWords";
 import { mapWordModal, useQuizContext } from "../context/quizContext";
-import { useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { FormalWord } from "@/ai/data/template/word";
 import Loading from "@/components/icons/Loading";
 import { sleep } from "@/utils";
@@ -12,21 +11,23 @@ import Switch from "@/components/icons/Switch";
 import Congratulation from "@/components/Congratulation";
 import { Pause } from "@/components/icons/Pause";
 import { usePronounce } from "@/hooks/usePronounce";
+import { useRootContext } from "../context/rootContext";
+import { useLocale } from "@/hooks/useLocale";
 
-export default function ListenVoice() {
+interface ListenVocieProps {
+  title: ReactNode;
+}
+export default function ListenVoice({ title }: ListenVocieProps) {
   const { quiz, quizcount } = useQuizContext();
+  const { config, updateConfig } = useRootContext();
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [quizList, setQuizList] = useState<FormalWord[]>([]);
   const [finishedRound, setFinishedRound] = useState(false);
-  const [showWording, setShowWording] = useState(true);
-  const [showMeaning, setShowMeaning] = useState(true);
-  const [showChinese, setShowChinese] = useState(false);
-  const [autoPlay, setAutoPlay] = useState(false);
-  const { pronounce, cancel } = usePronounce();
   const [playing, setPlaying] = useState(false);
-
-  const t = useLocale();
+  const { pronounce, cancel } = usePronounce();
+  const t = useLocale()
+  const autoPlay = config.listenVoice.autoPlay;
 
   const requestList = () => {
     setLoading(true);
@@ -59,7 +60,10 @@ export default function ListenVoice() {
   const onPlayClick = () => {
     if (playing) {
       if (autoPlay) {
-        setAutoPlay(false);
+        updateConfig((config) => {
+          config.listenVoice.autoPlay = false;
+          return config;
+        });
       }
       cancel();
       setPlaying(false);
@@ -88,7 +92,7 @@ export default function ListenVoice() {
   return (
     <div className={`flex flex-col gap-2 ${montserrat.className}`}>
       <div className="flex items-baseline justify-between md:text-lg">
-        <span>{t("home_quiz_type_listen_voice")}</span>
+        {title}
         {!finishedRound && (
           <Pagination
             current={current}
@@ -115,40 +119,32 @@ export default function ListenVoice() {
         <div>
           <div className={`card flex flex-col gap-2 md:w-full`}>
             <div className="flex items-center justify-between">
-              <div>auto play</div>
+              <div>{t("config_listen_voice_auto_play_title")}</div>
               <Switch
                 onToggle={(val) => {
-                  setAutoPlay(val);
+                  updateConfig((config) => {
+                    config.listenVoice.autoPlay = val;
+                    return config;
+                  });
                 }}
                 isOn={autoPlay}
               />
             </div>
-            <div className="flex items-center justify-between">
-              <div>show wording</div>
-              <Switch onToggle={setShowWording} isOn={showWording} />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>show Meaning</div>
-              <Switch onToggle={setShowMeaning} isOn={showMeaning} />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>show Chinese</div>
-              <Switch
-                disabled={!showWording}
-                onToggle={setShowChinese}
-                isOn={showChinese}
-              />
-            </div>
 
             <div className="flex flex-col items-center py-2">
-              <span className="h-10" onClick={onPlayClick}>
+              <span
+                className="h-10 md:hover:cursor-pointer"
+                onClick={onPlayClick}
+              >
                 {playing ? <Sound /> : <Pause />}
               </span>
               <span>click to {playing ? "pause" : "play"}</span>
             </div>
 
-            {showWording && <div>{quizList[current].word}</div>}
-            {showMeaning && (
+            {config.listenVoice.showWording && (
+              <div>{quizList[current].word}</div>
+            )}
+            {config.listenVoice.showMeaning && (
               <div>
                 {Object.entries(quizList[current].meaning).map((v, i) => (
                   <div key={`wording-${i}`}>
@@ -157,7 +153,7 @@ export default function ListenVoice() {
                 ))}
               </div>
             )}
-            {showWording && (
+            {config.listenVoice.showWording && (
               <div>
                 {quizList[current].examples.map((v, i) => (
                   <div key={`wording-${i}`} className="text-sm md:text-base">
@@ -165,7 +161,9 @@ export default function ListenVoice() {
                       {" "}
                       {i + 1}. {v.sentence}
                     </div>
-                    {showChinese && <div>{v.translation}</div>}
+                    {config.listenVoice.showChinese && (
+                      <div>{v.translation}</div>
+                    )}
                   </div>
                 ))}
               </div>

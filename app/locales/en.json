@@ -15,5 +15,9 @@
   "config_pronounciation_auto_title": "Auto Pronounce",
   "config_guess_word_meaning_title": "Show Chinese Meaning",
   "config_guess_word_example_title": "Show Examples",
-  "config_guess_word_example_interpretation_title": "Show Examples Interpretation"
+  "config_guess_word_example_interpretation_title": "Show Examples Interpretation",
+  "config_listen_voice_auto_play_title": "Auto Play",
+  "config_listen_voice_show_wording_title": "Show Word & Examples",
+  "config_listen_voice_show_meaning_title": "Show Chinese Meaning",
+  "config_listen_voice_show_chinese_title": "Show Chinese Examples"
 }
