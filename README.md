@@ -57,7 +57,7 @@ The application should now be running at [http://localhost:3000](http://localhos
 - [ ] &nbsp;Change useLocate to i18n.</br>
 - [x] &nbsp;Add 'go back' & 'go next' buttons </br>
 - [ ] &nbsp;Data persistence </br>
-- [ ] &nbsp;Feature add 'Automatic play the words and examples. </br>
+- [x] &nbsp;Feature add 'Automatic play the words and examples. </br>
 - [x] &nbsp;Add Pronunciation ability </br>
 - [ ] &nbsp;Integrate AI to come up with the training suggestion. </br> 
 
