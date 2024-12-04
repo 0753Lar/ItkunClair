@@ -47,9 +47,10 @@ export default function ListenVoice() {
           setPlaying(false);
           resolve();
         },
-        onerror() {
+        onerror(e) {
           setVoice(null);
           setPlaying(false);
+          console.error("pronounce error: ", e);
           reject();
         },
       });

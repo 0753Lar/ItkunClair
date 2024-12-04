@@ -27,21 +27,20 @@ export async function pronounce(
             : "en-GB";
 
       const langs = voices.filter((v) => v.lang === lang);
-      // console.log(">> langs: ", langs);
-
       const utterance = new SpeechSynthesisUtterance(text);
 
       utterance.voice = langs[0];
       utterance.pitch = 0.8;
       utterance.rate = options?.rate ?? 0.8;
       utterance.onend = () => {
-        console.log("utterance end");
         options?.onend?.();
       };
       utterance.onerror = (e) => {
         if (!["interrupted", "canceled"].includes(e.error)) {
           console.error("utterance error, trying fallbackSpeak, error: ", e);
           return fallbackSpeak(text, options);
+        } else {
+          options?.onerror?.(e);
         }
       };
 
@@ -51,7 +50,7 @@ export async function pronounce(
         cancel: () => speechSynthesis.cancel(),
       };
     } catch (error) {
-      console.error("Speech synthesis failed:", error);
+      console.warn("Speech synthesis failed:", error);
       return fallbackSpeak(text, options);
     }
   } else {
@@ -72,7 +71,7 @@ function fallbackSpeak(text: string, options?: PronounceOptions): Voice {
   audio.onerror = (e) => options?.onerror?.(e);
 
   return {
-    play: audio.play,
+    play: () => audio.play().catch((e) => options?.onerror?.(e)),
     pause: audio.pause,
     cancel: () => {
       audio.pause();
