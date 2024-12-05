@@ -26,11 +26,10 @@ export async function localModelhandler(word: string) {
 }
 
 export async function huggingfaceModalHandler(word: string) {
+  console.log(` -------------------WIP :${word}---------------------`);
   try {
     const res = await huggingfaceCall(userPrompt(word));
     const obj = JSON.parse(res.data[0].generated_text);
-    console.log(obj);
-
     return obj;
   } catch (error) {
     console.log(">> huggingfaceModalHandler error: \n", error);
@@ -104,12 +103,12 @@ export async function workWithUnitOfTask(
     }
     return await workWithUnitOfTask(handler);
   } else {
-    await processUnitOfFile(copyRawPath, handler);
+    await processUnitOfWork(copyRawPath, handler);
     await workWithUnitOfTask(handler);
   }
 }
 
-async function processUnitOfFile(
+async function processUnitOfWork(
   filePath: string,
   handler: (word: string) => Promise<FormalWord | null>,
 ) {
@@ -125,12 +124,19 @@ async function processUnitOfFile(
   let success = false;
   while (!success) {
     if (HFAttempt >= 10) {
-      console.log("-------------------REACH MAX ATTEMPT---------------");
+      console.log("-------------------REACH MAX ERROR ATTEMPT---------------");
+      exit(0);
+    } else if (count >= 10) {
+      console.log(
+        "-------------------REACH MAX DUPLICATE ATTEMPT---------------",
+      );
       exit(0);
     }
     count++;
     try {
-      const obj = await handler(nextLine.trim());
+      const obj = await handler(
+        count >= 5 ? `[${nextLine.trim()}]` : nextLine.trim(),
+      );
       if (obj) {
         try {
           if (obj.word == nextLine.trim()) {
@@ -140,15 +146,21 @@ async function processUnitOfFile(
             process.stdout.write(
               `>============================> Finished: [${nextLine}] with ${count} times\n`,
             );
+          } else {
+            console.log(
+              `>> generated wrong word: ${obj.word} with ${count} times.`,
+            );
+            await sleep(10_000);
           }
         } catch (error) {
           console.log(">> Parsing error: ", error, "\n");
+          await sleep(10_000);
         }
       }
     } catch (error) {
       console.log(">> hugging face error: ", error, "\n");
       HFAttempt++;
-      await sleep(100_000);
+      await sleep(10_000);
     }
   }
 

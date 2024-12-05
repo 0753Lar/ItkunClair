@@ -20,9 +20,11 @@ export async function huggingfaceCall(userContent: string) {
     },
     {
       timeout: 60_000,
+      params: { cacheBuster: Date.now() },
       headers: {
         Authorization: `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
       },
       httpAgent:
         process.argv[2] === "--proxy"
