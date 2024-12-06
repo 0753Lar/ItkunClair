@@ -16,23 +16,6 @@ jobs:
         with:
           ref: chore/timer
 
-      - name: Skip if AI Task Branch
-        if: github.ref == 'refs/heads/chore/timer'
-        run: |
-          echo "Push from AI task branch detected. Skipping workflow."
-          exit 0
-
-      - name: Check Task Enabled
-        run: |
-          if [ ! -f "task-switch.txt" ]; then
-          echo "Control file not found. Exiting."
-          exit 0
-          fi
-          if [ "$(cat task-switch.txt)" == "" ]; then
-          echo "Empty task. Exiting."
-          exit 0
-          fi
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
