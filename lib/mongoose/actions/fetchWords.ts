@@ -3,7 +3,7 @@
 import { CET4_WORD, CET6_WORD, IWord } from "../models/Word";
 import { clientConnect } from "../db";
 import mongoose from "mongoose";
-import { OXFORD_3000_WORD } from "../models/FormalWord";
+import { OXFORD_3000_WORD, OXFORD_5000_WORD } from "../models/FormalWord";
 import { FormalWord } from "@/ai/data/template/word";
 
 export async function fetchWords(
@@ -33,7 +33,7 @@ export async function fetchWords(
 }
 
 export async function fetchFormalWords(
-  wordModel: typeof OXFORD_3000_WORD,
+  wordModel: typeof OXFORD_3000_WORD | typeof OXFORD_5000_WORD,
   count: number = 50,
 ) {
   try {

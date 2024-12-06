@@ -39,3 +39,4 @@ export const FormalWordSchema = new mongoose.Schema<FormalWord>({
 });
 
 export const OXFORD_3000_WORD = "oxford_3000_word";
+export const OXFORD_5000_WORD = "oxford_5000_word";

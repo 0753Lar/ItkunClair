@@ -3,7 +3,10 @@ import { exit } from "process";
 import { clientConnect } from "@/lib/mongoose/db";
 import dotenv from "dotenv";
 import * as readline from "readline";
-import { OXFORD_3000_WORD } from "@/lib/mongoose/models/FormalWord";
+import {
+  OXFORD_3000_WORD,
+  OXFORD_5000_WORD,
+} from "@/lib/mongoose/models/FormalWord";
 import { FormalWord } from "@/ai/data/template/word";
 import { getAlphabet, Letter } from "@/utils/nodeUtils";
 
@@ -22,31 +25,38 @@ async function seedDB() {
   try {
     await clientConnect(process.env.MONGODB_URI);
 
-    const models = [mongoose.model(OXFORD_3000_WORD)];
+    const vocabLoadders = [
+      [
+        OXFORD_3000_WORD,
+        async () =>
+          (await import("@/assets/ai_formated_words/oxford3000_partial.json"))
+            .default as unknown as FormalWordBook,
+      ],
+      [
+        OXFORD_5000_WORD,
+        async () =>
+          (await import("@/assets/ai_formated_words/Oxford_raw_5000.json"))
+            .default as unknown as FormalWordBook,
+      ],
+    ] as const;
 
-    if (!override) {
-      for (const model of models) {
-        const count = await model.countDocuments();
-
-        if (count > 0) {
+    for (let index = 0; index < vocabLoadders.length; index++) {
+      const [modelName, loader] = vocabLoadders[index];
+      const model = mongoose.model<FormalWord>(modelName);
+      if ((await model.countDocuments()) > 0) {
+        if (!override) {
           console.warn(
-            `[WARNNING] Cancel the seeding as ${model.modelName} already exist, you can put '--override' to override all existing documents.`,
+            `[WARNNING] Cancel the seeding as ${modelName} already exist, you can put '--override' to override all existing documents.`,
           );
-          exit(0);
+          continue;
+        } else {
+          console.info(`emptying collections for[${modelName}]...`);
+          model.deleteMany({});
         }
       }
+
+      await insertNewVocabulary(await loader(), model);
     }
-
-    console.info("emptying collections...");
-    models.forEach((m) => m.deleteMany({}));
-
-    const wordList = (
-      await import("@/assets/ai_formated_words/oxford3000_partial.json")
-    ).default;
-    await insertNewVocabulary(
-      wordList as unknown as FormalWordBook,
-      mongoose.model<FormalWord>(OXFORD_3000_WORD),
-    );
   } catch (err) {
     console.log(err);
   }

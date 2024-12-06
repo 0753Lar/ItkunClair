@@ -1,4 +1,7 @@
-import { OXFORD_3000_WORD } from "@/lib/mongoose/models/FormalWord";
+import {
+  OXFORD_3000_WORD,
+  OXFORD_5000_WORD,
+} from "@/lib/mongoose/models/FormalWord";
 import { allChallenge, allQuiz } from "@/utils/config";
 import { getPersistentData, updatePersistenData } from "@/utils/persistent";
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
@@ -20,10 +23,14 @@ const quizContext = createContext<QuizContextInterface | null>(null);
 export const useQuizContext = () =>
   useContext(quizContext) as unknown as QuizContextInterface;
 
-export const mapWordModal = (quiz: Quiz): typeof OXFORD_3000_WORD => {
+export const mapWordModal = (
+  quiz: Quiz,
+): typeof OXFORD_3000_WORD | typeof OXFORD_5000_WORD => {
   switch (quiz) {
     case "Oxford3000":
       return OXFORD_3000_WORD;
+    case "Oxford5000":
+      return OXFORD_5000_WORD;
   }
 };
 

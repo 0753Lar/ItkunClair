@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
-import { FormalWordSchema, OXFORD_3000_WORD } from "./models/FormalWord";
+import {
+  FormalWordSchema,
+  OXFORD_3000_WORD,
+  OXFORD_5000_WORD,
+} from "./models/FormalWord";
 
 export async function clientConnect(url?: string) {
   await mongoose.connect(url || process.env.MONGODB_URI || "");
@@ -11,6 +15,9 @@ function buildModal() {
   const modelNames = mongoose.modelNames();
   if (!modelNames.includes(OXFORD_3000_WORD)) {
     mongoose.model(OXFORD_3000_WORD, FormalWordSchema);
+  }
+  if (!modelNames.includes(OXFORD_5000_WORD)) {
+    mongoose.model(OXFORD_5000_WORD, FormalWordSchema);
   }
 }
 
