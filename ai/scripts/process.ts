@@ -139,7 +139,7 @@ async function processUnitOfWork(
       );
       if (obj) {
         try {
-          if (obj.word == nextLine.trim()) {
+          if (obj.word.toLowerCase() == nextLine.trim().toLowerCase()) {
             appendWordIntoJSON(getJSONOutputPath(), obj);
             ensureWriteFileSync(targetOutputPath, JSON.stringify(obj) + "\n");
             success = true;
