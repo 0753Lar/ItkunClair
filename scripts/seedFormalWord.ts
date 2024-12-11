@@ -29,7 +29,7 @@ async function seedDB() {
       [
         OXFORD_3000_WORD,
         async () =>
-          (await import("@/assets/ai_formated_words/oxford3000_partial.json"))
+          (await import("@/assets/ai_formated_words/Oxford_raw_3000.json"))
             .default as unknown as FormalWordBook,
       ],
       [
